@@ -17,6 +17,7 @@ namespace GGJ2026
 
         public void OnIntent(BaseActor a, MoveIntent intent, TurnContext ctx)
         {
+            Debug.Log($"[OnIntent] {a.name} intent={intent.dir}");
             if (!a.IsAlive) return;
             if (intent.dir == MoveDir.None) return;
             if (world == null) return;

@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GGJ2026
 {
@@ -22,6 +24,7 @@ namespace GGJ2026
 
         public void StepTurn()
         {
+            Debug.Log("=== StepTurn ===");
             if (world == null || player == null) return;
 
             var ctx = new TurnContext
@@ -34,6 +37,7 @@ namespace GGJ2026
 
             // 1) 读取玩家输入（Mind 只产出意图）
             MoveIntent playerIntent = player.ReadIntent();
+            Debug.Log($"playerIntent = {playerIntent.dir}");
 
 
             var playerFrom = world.GetActorCell(player);

@@ -169,7 +169,7 @@ namespace GGJ2026
 
             occupancy[toCell] = actor;
             actorCell[actor] = toCell;
-
+             Debug.Log($"[MoveActor] {actor.name} {from} -> {toCell}");
             // 同步世界坐标（用 groundTilemap 或 Grid）
             var worldPos = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
             actor.transform.position = worldPos;

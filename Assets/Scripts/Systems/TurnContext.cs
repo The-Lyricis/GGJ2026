@@ -33,7 +33,11 @@ namespace GGJ2026
         public void SetIntent(BaseActor a, MoveIntent i) => intents[a] = i;
         public MoveIntent GetIntent(BaseActor a) => intents.TryGetValue(a, out var i) ? i : MoveIntent.None;
 
-        public void QueueMove(BaseActor a, Vector2Int cell) => pendingMoves[a] = cell;
+        public void QueueMove(BaseActor a, Vector2Int cell)
+        {
+            pendingMoves[a] = cell;
+            Debug.Log($"[QueueMove] {a.name} -> {cell}");
+        }
 
         public Vector2Int ResolveMovement(BaseActor a, Vector2Int from, MoveDir dir, IGridWorld world)
         {

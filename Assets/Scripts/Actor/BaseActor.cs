@@ -97,6 +97,7 @@ namespace GGJ2026
         
         public MoveIntent ReadIntent()
         {
+            Debug.Log($"[ReadIntent] {name} mind={(mind == null ? "null" : mind.GetType().Name)}");
             if (!isAlive || mind == null) return MoveIntent.None;
             return mind.ReadMoveIntent();
         }
