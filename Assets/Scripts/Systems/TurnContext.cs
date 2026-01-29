@@ -155,14 +155,14 @@ namespace GGJ2026
                 if (world.IsButtonCell(cell))
                 {
                     // TODO: 触发按钮逻辑（可通知 ButtonManager）
-                    Debug.Log($"{a.name} triggered a button at {cell}");
+                    Debug.LogWarning($"{a.name} triggered a button at {cell}");
                 }
 
                 // 3) 出口（玩家）
                 if (a is PlayerActor && world.IsExitCell(cell))
                 {
                     // TODO: 关卡胜利
-                    Debug.Log($"Player reached exit at {cell}");
+                    Debug.LogWarning($"Player reached exit at {cell}");
                 }
             }
         }
