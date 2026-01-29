@@ -1,0 +1,54 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace GGJ2026
+{
+    public class TurnSystem : MonoBehaviour
+    {
+        [SerializeField] private GridWorldBehaviour world;
+        [SerializeField] private List<BaseActor> allActors = new();
+        [SerializeField] private PlayerActor player;
+
+        public void StepTurn()
+        {
+            if (world == null || player == null) return;
+
+            var ctx = new TurnContext
+            {
+                playerControlColor = player.ControlColor
+            };
+
+            // 0) 回合快照（阻挡判定使用快照）
+            ctx.BuildSnapshot(allActors, world);
+
+            // 1) 读取玩家输入（Mind 只产出意图）
+            MoveIntent playerIntent = player.ReadIntent();
+
+            // 2) 共生广播 -> 为每个 actor 写入本回合 intent
+            SymbiosisController.Broadcast(playerIntent, allActors, ctx);
+
+            // 3) Trait 执行（通常由 GridMovementTrait 计算 to 并 QueueMove）
+            for (int i = 0; i < allActors.Count; i++)
+            {
+                var a = allActors[i];
+                if (!a.IsAlive) continue;
+
+                var intent = ctx.GetIntent(a);
+                a.DispatchIntent(intent, ctx);
+            }
+
+            // 4) 同时应用位置
+            ctx.ApplyMoves(world);
+
+            // 5) 触发与拾取
+            ctx.ResolveTriggers(world);
+
+            // 6) 战斗结算（整体一次性）
+            CombatSystem.Resolve(allActors, world);
+
+            // 7) 胜负判断
+            // TODO: CheckWinLose()
+        }
+    }
+
+}
