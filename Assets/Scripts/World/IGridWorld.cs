@@ -18,5 +18,7 @@ namespace GGJ2026
 
         void MoveActor(BaseActor actor, Vector2Int toCell);
         Vector2Int GetActorCell(BaseActor actor);
+
+        bool TryConsumeMask(Vector2Int cell, out FactionColor color);
     }
 }

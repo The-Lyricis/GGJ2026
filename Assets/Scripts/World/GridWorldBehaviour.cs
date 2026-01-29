@@ -199,5 +199,15 @@ namespace GGJ2026
         {
             UnregisterActor(actor);
         }
+
+        public bool TryConsumeMask(Vector2Int cell, out FactionColor color)
+        {
+            color = FactionColor.White;
+            if (!IsMaskCell(cell, out color)) return false;
+
+            markerTilemap.SetTile((Vector3Int)cell, null); // 清掉面具图块
+            return true;
+        }
+
     }
 }

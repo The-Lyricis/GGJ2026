@@ -40,13 +40,14 @@ namespace GGJ2026
             Debug.Log($"playerIntent = {playerIntent.dir}");
 
 
+            // 2) 共生广播 -> 为每个 actor 写入本回合 intent
+            SymbiosisController.Broadcast(playerIntent, allActors, ctx);
+
             var playerFrom = world.GetActorCell(player);
             var playerTo = ctx.ResolveMovement(player, playerFrom, playerIntent.dir, world);
             bool playerBlocked = (playerIntent.dir != MoveDir.None && playerTo == playerFrom);
 
 
-            // 2) 共生广播 -> 为每个 actor 写入本回合 intent
-            SymbiosisController.Broadcast(playerIntent, allActors, ctx);
 
             // Player blocked -> all controlled NPCs do nothing
             if (playerBlocked)

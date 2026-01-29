@@ -143,8 +143,9 @@ namespace GGJ2026
                 // 1) 面具（玩家）
                 if (a is PlayerActor player)
                 {
-                    if (world.IsMaskCell(cell, out var color))
+                    if (world.IsMaskCell(cell, out var color) && world.TryConsumeMask(cell, out color))
                     {
+
                         player.EquipMask(color); // 切换控制色/战斗色 + 切 Mind
                         // TODO: 如果要“旧面具回原位”，由 MaskManager/World 处理
                     }
