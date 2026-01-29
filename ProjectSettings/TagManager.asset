@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - Actor
+  - Trigger
   - 
   - 
   - 
@@ -40,4 +40,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BG
+    uniqueID: 1746416617
+    locked: 0
+  - name: Ground
+    uniqueID: 2649831395
+    locked: 0
+  - name: Walls
+    uniqueID: 1481464605
+    locked: 0
+  - name: Actors
+    uniqueID: 3851853833
+    locked: 0
+  - name: FX
+    uniqueID: 304468215
+    locked: 0
+  - name: UI
+    uniqueID: 649322359
     locked: 0

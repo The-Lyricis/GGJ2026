@@ -24,8 +24,26 @@ namespace GGJ2026
             // 1) 读取玩家输入（Mind 只产出意图）
             MoveIntent playerIntent = player.ReadIntent();
 
+
+            var playerFrom = world.GetActorCell(player);
+            var playerTo = ctx.ResolveMovement(player, playerFrom, playerIntent.dir, world);
+            bool playerBlocked = (playerIntent.dir != MoveDir.None && playerTo == playerFrom);
+
+
             // 2) 共生广播 -> 为每个 actor 写入本回合 intent
             SymbiosisController.Broadcast(playerIntent, allActors, ctx);
+
+            // Player blocked -> all controlled NPCs do nothing
+            if (playerBlocked)
+            {
+                for (int i = 0; i < allActors.Count; i++)
+                {
+                    var a = allActors[i];
+                    if (!a.IsAlive || a is PlayerActor) continue;
+                    if (a.ControlColor == ctx.playerControlColor)
+                        ctx.SetIntent(a, MoveIntent.None);
+                }
+            }
 
             // 3) Trait 执行（通常由 GridMovementTrait 计算 to 并 QueueMove）
             for (int i = 0; i < allActors.Count; i++)
@@ -41,13 +59,10 @@ namespace GGJ2026
             ctx.ApplyMoves(world);
 
             // 5) 触发与拾取
-            ctx.ResolveTriggers(world);
+            ctx.ResolveTriggers(world, allActors);
 
             // 6) 战斗结算（整体一次性）
             CombatSystem.Resolve(allActors, world);
-
-            // 7) 胜负判断
-            // TODO: CheckWinLose()
         }
     }
 

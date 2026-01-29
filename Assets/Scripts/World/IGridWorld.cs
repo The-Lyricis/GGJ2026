@@ -14,6 +14,8 @@ namespace GGJ2026
         bool IsMaskCell(Vector2Int cell, out FactionColor color);
         bool IsButtonCell(Vector2Int cell);
 
+        bool IsExitCell(Vector2Int cell);
+
         void MoveActor(BaseActor actor, Vector2Int toCell);
         Vector2Int GetActorCell(BaseActor actor);
     }

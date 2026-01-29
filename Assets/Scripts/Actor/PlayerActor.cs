@@ -6,21 +6,29 @@ namespace GGJ2026
         [Header("Mask/Control")]
         [SerializeField] private FactionColor controlColor = FactionColor.White;
 
-        public override FactionColor ControlColor => controlColor;
+        [Header("Minds")]
+        [SerializeField] private PlayerMind playerMind;
+        [SerializeField] private SymbiosisMind symbiosisMind;
 
-        // 共生免死（战斗判定色跟随控制色）
+        public override FactionColor ControlColor => controlColor;
         public override FactionColor CombatColor => controlColor;
 
         public void EquipMask(FactionColor color)
         {
             controlColor = color;
-            // TODO: 切换 Mind（PlayerMind / SymbiosisMind）由外部系统或此处执行
+
+            // 切到共生 Mind
+            if (symbiosisMind != null)
+                SetMind(symbiosisMind);
         }
 
         public void UnequipMask()
         {
             controlColor = FactionColor.White;
-            // TODO: 切换回 PlayerMind
+
+            // 切回玩家 Mind
+            if (playerMind != null)
+                SetMind(playerMind);
         }
     }
 

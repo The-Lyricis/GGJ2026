@@ -110,6 +110,7 @@ namespace GGJ2026
         public virtual void Kill()
         {
             isAlive = false;
+            OnKilled?.Invoke(this);
             gameObject.SetActive(false);
         }
     }
