@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GGJ2026
 {
@@ -149,12 +150,14 @@ namespace GGJ2026
                 if (world.IsButtonCell(cell))
                 {
                     // TODO: 触发按钮逻辑（可通知 ButtonManager）
+                    Debug.Log($"{a.name} triggered a button at {cell}");
                 }
 
                 // 3) 出口（玩家）
                 if (a is PlayerActor && world.IsExitCell(cell))
                 {
                     // TODO: 关卡胜利
+                    Debug.Log($"Player reached exit at {cell}");
                 }
             }
         }

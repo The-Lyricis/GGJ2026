@@ -164,12 +164,15 @@ namespace GGJ2026
         {
             if (actor == null) return;
 
-            // 防御：未注册 actor 不应误删 (0,0)
             if (actorCell.TryGetValue(actor, out var from))
                 occupancy.Remove(from);
 
             occupancy[toCell] = actor;
             actorCell[actor] = toCell;
+
+            // 同步世界坐标（用 groundTilemap 或 Grid）
+            var worldPos = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
+            actor.transform.position = worldPos;
         }
 
         public Vector2Int GetActorCell(BaseActor actor)

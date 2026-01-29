@@ -9,6 +9,17 @@ namespace GGJ2026
         [SerializeField] private List<BaseActor> allActors = new();
         [SerializeField] private PlayerActor player;
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.W) ||
+            Input.GetKeyDown(KeyCode.A) ||
+            Input.GetKeyDown(KeyCode.S) ||
+            Input.GetKeyDown(KeyCode.D))
+            {
+                StepTurn();
+            }
+        }
+
         public void StepTurn()
         {
             if (world == null || player == null) return;
