@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 
 namespace GGJ2026
 {
@@ -24,7 +22,6 @@ namespace GGJ2026
 
         public void StepTurn()
         {
-            Debug.Log("=== StepTurn ===");
             if (world == null || player == null) return;
 
             var ctx = new TurnContext
@@ -32,53 +29,98 @@ namespace GGJ2026
                 playerControlColor = player.ControlColor
             };
 
-            // 0) 回合快照（阻挡判定使用快照）
+            // 0) Build snapshot for blocking
             ctx.BuildSnapshot(allActors, world);
 
-            // 1) 读取玩家输入（Mind 只产出意图）
+            // 1) Read player intent
             MoveIntent playerIntent = player.ReadIntent();
-            Debug.Log($"playerIntent = {playerIntent.dir}");
 
-
-            // 2) 共生广播 -> 为每个 actor 写入本回合 intent
+            // 2) Broadcast intents to controlled actors
             SymbiosisController.Broadcast(playerIntent, allActors, ctx);
 
+            // 3) Solve movement (front-to-back by direction)
+            this.ResolveMovement(ctx);
+
+            // 3.1) Decide if player is blocked using planned moves
             var playerFrom = world.GetActorCell(player);
-            var playerTo = ctx.ResolveMovement(player, playerFrom, playerIntent.dir, world);
-            bool playerBlocked = (playerIntent.dir != MoveDir.None && playerTo == playerFrom);
+            bool playerBlocked = false;
 
+            if (playerIntent.dir != MoveDir.None)
+            {
+                if (!ctx.TryGetPlannedMove(player, out var playerTo))
+                    playerBlocked = true; // 没有计划移动，视作被挡
+                else
+                    playerBlocked = (playerTo == playerFrom);
+            }
 
-
-            // Player blocked -> all controlled NPCs do nothing
+            // 3.2) If blocked, stop same-color NPCs and re-solve
             if (playerBlocked)
             {
                 for (int i = 0; i < allActors.Count; i++)
                 {
                     var a = allActors[i];
                     if (!a.IsAlive || a is PlayerActor) continue;
+
                     if (a.ControlColor == ctx.playerControlColor)
                         ctx.SetIntent(a, MoveIntent.None);
                 }
+
+                ctx.ClearPlannedMoves();
+                // 3) Solve movement (front-to-back by direction)
+                this.ResolveMovement(ctx);
             }
 
-            // 3) Trait 执行（通常由 GridMovementTrait 计算 to 并 QueueMove）
-            for (int i = 0; i < allActors.Count; i++)
-            {
-                var a = allActors[i];
-                if (!a.IsAlive) continue;
-
-                var intent = ctx.GetIntent(a);
-                a.DispatchIntent(intent, ctx);
-            }
-
-            // 4) 同时应用位置
+            // 4) Apply moves
             ctx.ApplyMoves(world);
 
-            // 5) 触发与拾取
+            // 5) Resolve triggers
             ctx.ResolveTriggers(world, allActors);
 
-            // 6) 战斗结算（整体一次性）
+            // 6) Resolve combat
             CombatSystem.Resolve(allActors, world);
+
+        }
+
+        private void ResolveMovement(TurnContext ctx)
+        {
+            MoveDir[] dirs = { MoveDir.Up, MoveDir.Down, MoveDir.Left, MoveDir.Right };
+
+            for (int d = 0; d < dirs.Length; d++)
+            {
+                var dir = dirs[d];
+                var delta = MoveUtil.DirToDelta(dir);
+
+                var list = new List<BaseActor>();
+                for (int i = 0; i < allActors.Count; i++)
+                {
+                    var a = allActors[i];
+                    if (!a.IsAlive) continue;
+
+                    var intent = ctx.GetIntent(a);
+                    if (intent.dir != dir) continue;
+
+                    list.Add(a);
+                }
+
+                list.Sort((a, b) =>
+                {
+                    var ca = world.GetActorCell(a);
+                    var cb = world.GetActorCell(b);
+                    return Projection(cb, delta).CompareTo(Projection(ca, delta));
+                });
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var a = list[i];
+                    var intent = ctx.GetIntent(a);
+                    a.DispatchIntent(intent, ctx);
+                }
+            }
+        }
+
+        private static int Projection(Vector2Int cell, Vector2Int delta)
+        {
+            return cell.x * delta.x + cell.y * delta.y;
         }
     }
 
