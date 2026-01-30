@@ -101,11 +101,20 @@ namespace GGJ2026
 
             var next = from + delta;
 
-            // 进入冰面也要滑
+            // ????????????
             if (!world.IsIce(from) && !world.IsIce(next))
             {
                 return IsBlocked(next, dir, color, combat) ? from : next;
             }
+
+            // ????????????????????????????? next ?????
+            if (!world.IsIce(from) && world.IsIce(next) && IsBlocked(next, dir, color, combat))
+            {
+                return from;
+            }
+
+            // ????????????????? next ?????
+            // if (!world.IsIce(from) && world.IsIce(next)) { ... }
             
             //统一划在冰面外第一格子上停止的写法
             // var current = from;
@@ -122,22 +131,31 @@ namespace GGJ2026
 
             // ===== 冰面排队滑行（队列出冰）=====
 
-            // 1) 找到队头（沿移动方向最前的同色同向）
-            Vector2Int headCell = from;
+            // 1) 找到冰面上的队头（只在冰面内前移）
+            // ??????????????? next ????
+            var startCell = world.IsIce(from) ? from : next;
+            Vector2Int headCell = startCell;
             while (true)
             {
                 var ahead = headCell + delta;
+
+                // 只在冰面上继续前移
+                if (!world.IsIce(ahead)) break;
+
                 if (!occupancySnapshot.TryGetValue(ahead, out var occ) || occ == null || !occ.IsAlive) break;
                 if (occ.ControlColor != color) break;
                 if (GetIntent(occ).dir != dir) break;
+
                 headCell = ahead;
             }
 
-            // 2) 从队头往后收集队列（head -> tail）
+            // 2) 从队头往后收集“冰面上的”队列
             List<BaseActor> chain = new();
             var cur = headCell;
             while (true)
             {
+                if (!world.IsIce(cur)) break;
+
                 if (!occupancySnapshot.TryGetValue(cur, out var occ) || occ == null || !occ.IsAlive) break;
                 if (occ.ControlColor != color) break;
                 if (GetIntent(occ).dir != dir) break;
@@ -145,12 +163,15 @@ namespace GGJ2026
                 chain.Add(occ);
 
                 var back = cur - delta;
+                if (!world.IsIce(back)) break;
+
                 if (!occupancySnapshot.TryGetValue(back, out var occBack) || occBack == null || !occBack.IsAlive) break;
                 if (occBack.ControlColor != color) break;
                 if (GetIntent(occBack).dir != dir) break;
 
                 cur = back;
             }
+
 
             // 3) 计算队头滑到哪里（冰外第一格 or 被挡停下）
             Vector2Int headTarget = headCell;
