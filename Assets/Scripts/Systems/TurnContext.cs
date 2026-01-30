@@ -106,19 +106,94 @@ namespace GGJ2026
             {
                 return IsBlocked(next, dir, color, combat) ? from : next;
             }
+            
+            //统一划在冰面外第一格子上停止的写法
+            // var current = from;
+            // while (true)
+            // {
+            //     var probe = current + delta;
+            //     if (IsBlocked(probe, dir, color, combat)) return current;
 
-            var current = from;
+            //     if (IsMechanism(probe)) return probe;
+
+            //     current = probe;
+            //     if (!world.IsIce(current)) return current;
+            // }
+
+            // ===== 冰面排队滑行（队列出冰）=====
+
+            // 1) 找到队头（沿移动方向最前的同色同向）
+            Vector2Int headCell = from;
             while (true)
             {
-                var probe = current + delta;
-                if (IsBlocked(probe, dir, color, combat)) return current;
-
-                if (IsMechanism(probe)) return probe;
-
-                current = probe;
-                if (!world.IsIce(current)) return current;
+                var ahead = headCell + delta;
+                if (!occupancySnapshot.TryGetValue(ahead, out var occ) || occ == null || !occ.IsAlive) break;
+                if (occ.ControlColor != color) break;
+                if (GetIntent(occ).dir != dir) break;
+                headCell = ahead;
             }
+
+            // 2) 从队头往后收集队列（head -> tail）
+            List<BaseActor> chain = new();
+            var cur = headCell;
+            while (true)
+            {
+                if (!occupancySnapshot.TryGetValue(cur, out var occ) || occ == null || !occ.IsAlive) break;
+                if (occ.ControlColor != color) break;
+                if (GetIntent(occ).dir != dir) break;
+
+                chain.Add(occ);
+
+                var back = cur - delta;
+                if (!occupancySnapshot.TryGetValue(back, out var occBack) || occBack == null || !occBack.IsAlive) break;
+                if (occBack.ControlColor != color) break;
+                if (GetIntent(occBack).dir != dir) break;
+
+                cur = back;
+            }
+
+            // 3) 计算队头滑到哪里（冰外第一格 or 被挡停下）
+            Vector2Int headTarget = headCell;
+            var slide = headCell;
+            while (true)
+            {
+                var probe = slide + delta;
+                if (IsBlocked(probe, dir, color, combat))
+                {
+                    headTarget = slide;
+                    break;
+                }
+
+                if (IsMechanism(probe))
+                {
+                    headTarget = probe;
+                    break;
+                }
+
+                slide = probe;
+                if (!world.IsIce(slide))
+                {
+                    headTarget = slide;
+                    break;
+                }
+            }
+
+            // 队头不动 -> 整队不动
+            if (headTarget == headCell) return from;
+
+            // 4) 给队列分配格子（队头出冰，其余排在后面冰上）
+            int idx = chain.IndexOf(a);
+            if (idx < 0) return from;
+
+            var target = headTarget - (delta * idx);
+
+            // 队尾只能排在冰面上（不能跑到冰外）
+            if (idx > 0 && !world.IsIce(target)) return from;
+
+            if (!world.InBounds(target) || world.IsWall(target)) return from;
+            return target;
         }
+
 
 
         public void ApplyMoves(IGridWorld world)
