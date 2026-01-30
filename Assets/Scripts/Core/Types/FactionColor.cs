@@ -6,7 +6,7 @@ namespace GGJ2026
         Purple,
         Red,
         Yellow,
-        Green,
-        White
+        White,
+        Green, // Neutral
     }
 }

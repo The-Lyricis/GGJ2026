@@ -9,7 +9,31 @@ namespace GGJ2026
         [SerializeField] private List<BaseActor> allActors = new();
         [SerializeField] private PlayerActor player;
 
-        void Update()
+
+        private bool autoCollectOnAwake = true;
+        private bool includeInactiveActors = true;
+
+        private void Reset()
+        {
+            // 当组件第一次被添加到物体上时调用
+            CollectSceneReferences();
+        }
+
+        private void OnValidate()
+        {
+            // Inspector 修改时自动刷新
+            // 避免每次都刷太频繁：只在缺引用时补齐
+            if (world == null || player == null || allActors == null || allActors.Count == 0)
+                CollectSceneReferences();
+        }
+
+        private void Awake()
+        {
+            if (autoCollectOnAwake)
+                CollectSceneReferences();
+        }
+
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.W) ||
             Input.GetKeyDown(KeyCode.A) ||
@@ -19,6 +43,48 @@ namespace GGJ2026
                 StepTurn();
             }
         }
+
+        [ContextMenu("Collect Scene References")]
+        public void CollectSceneReferences()
+        {
+            // 1) world
+            if (world == null)
+                world = FindFirstObjectByType<GridWorldBehaviour>();
+
+            // 2) allActors
+#if UNITY_2023_1_OR_NEWER
+            var actors = FindObjectsByType<BaseActor>(
+                includeInactiveActors ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
+                FindObjectsSortMode.None
+            );
+#else
+            // 旧版本 Unity：FindObjectsOfType 默认不包含 inactive
+            var actors = FindObjectsOfType<BaseActor>();
+#endif
+            allActors.Clear();
+            for (int i = 0; i < actors.Length; i++)
+            {
+                // 若你希望把某些 actor 排除，可在这里加过滤条件
+                allActors.Add(actors[i]);
+            }
+
+            // 3) player：优先从 allActors 中找（避免再全场扫描）
+            player = null;
+            for (int i = 0; i < allActors.Count; i++)
+            {
+                if (allActors[i] is PlayerActor p)
+                {
+                    player = p;
+                    break;
+                }
+            }
+
+            // 如果没找到，再兜底扫描一次
+            if (player == null)
+                player = FindFirstObjectByType<PlayerActor>();
+        }
+
+
 
         public void StepTurn()
         {
