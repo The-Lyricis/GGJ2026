@@ -1,0 +1,80 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6742461126362082729
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6577823836307085086}
+  - component: {fileID: 7725014903617843338}
+  - component: {fileID: 3249548101146018525}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6577823836307085086
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742461126362082729}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.007843867, y: 0.008924648, z: 0.009671009}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7725014903617843338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742461126362082729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c183b2e07234de896d417b0e9860f37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  world: {fileID: 3249548101146018525}
+  allActors:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  player: {fileID: 0}
+--- !u!114 &3249548101146018525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6742461126362082729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aeca9f045ab4bb99b6204f1e144695d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groundTilemap: {fileID: 0}
+  wallTilemap: {fileID: 0}
+  surfaceTilemap: {fileID: 0}
+  markerTilemap: {fileID: 0}
+  iceTiles:
+  - {fileID: 11400000, guid: 2bc6fa313d0f9ed4c84f0d48f6a99aaf, type: 2}
+  buttonTiles: []
+  exitTiles:
+  - {fileID: 11400000, guid: d243d06b04ac7194a884c309e738a448, type: 2}
+  maskTiles:
+  - tile: {fileID: 11400000, guid: 449a9819811ddf34790345a3d3cbab1f, type: 2}
+    color: 2
+  - tile: {fileID: 11400000, guid: 67301ea02fee05040a5530f12fcdf3e3, type: 2}
+    color: 0
