@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
 namespace GGJ2026
 {
-     /// <summary>
+    /// <summary>
     /// Data definition for a button tile.
     /// Placed on Marker Tilemap; runtime uses tile->def mapping.
     /// </summary>
@@ -22,16 +23,7 @@ namespace GGJ2026
         [Tooltip("Allowed colors when type == ColorOnly.")]
         public List<FactionColor> allowColors = new();
 
-        [Tooltip("If true, only triggers when an actor enters the cell (edge trigger). " +
-                 "If false, triggers every turn while standing on the cell.")]
-        public enum ButtonTriggerMode
-        {
-            Latch, // 按到一次就算触发（可选：仅Enter触发一次）
-            Hold   // 必须有人站在上面才算触发，离开就释放
-        }
-        public ButtonTriggerMode triggerMode = ButtonTriggerMode.Latch;
-
-        // ===== Runtime cache (optional but recommended) =====
+        // ===== Runtime cache =====
         [System.NonSerialized] private HashSet<FactionColor> allowSet;
 
         /// <summary>

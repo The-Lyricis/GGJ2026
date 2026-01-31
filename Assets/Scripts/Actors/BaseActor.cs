@@ -49,6 +49,18 @@ namespace GGJ2026
 
         protected virtual void Awake()
         {
+             var p = transform.position;
+
+            // 防止 tileSize 为 0
+            float sx = 1;
+            float sy = 1;
+
+            // “向下取整到格子起点”再“+半格到中心”
+            float cx = Mathf.Floor(p.x / sx) * sx + sx * 0.5f;
+            float cy = Mathf.Floor(p.y / sy) * sy + sy * 0.5f;
+
+            transform.position = new Vector3(cx, cy, 0f);
+
             if (mindComponent != null && mindComponent is IMind m)
             {
                 mind = m;

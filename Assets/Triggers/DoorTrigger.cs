@@ -5,22 +5,37 @@ namespace GGJ2026
 {
     public class DoorTrigger : MonoBehaviour
     {
+        [Header("References")]
+        [SerializeField] private GridWorldBehaviour world;
+        [SerializeField] private DoorMarker marker;
+
+        [Header("Visual")]
+        [SerializeField] private Renderer doorRenderer; // 可选：不填则自动从自身获取
 
         [Header("Behavior")]
-        [SerializeField] private bool toggleOnTrigger = true;
-        [SerializeField] private bool openOnTrigger = true;
-
-        [Header("References")]
-        [SerializeField] private GridWorldBehaviour world;   
-        [SerializeField] private DoorMarker marker;          
-        private GameObject doorVisual;      
+        [Tooltip("If true, door opens only once; later button events are ignored.")]
+        [SerializeField] private bool openOnce = true;
 
         private bool isOpen;
+        private readonly HashSet<string> latchedIds = new();
 
         private void Awake()
         {
+            var p = transform.position;
+
+            // 防止 tileSize 为 0
+            float sx = 1;
+            float sy = 1;
+
+            // “向下取整到格子起点”再“+半格到中心”
+            float cx = Mathf.Floor(p.x / sx) * sx + sx * 0.5f;
+            float cy = Mathf.Floor(p.y / sy) * sy + sy * 0.5f;
+
+            transform.position = new Vector3(cx, cy, 0f);
+
             if (marker == null) marker = GetComponent<DoorMarker>();
             if (world == null) world = FindFirstObjectByType<GridWorldBehaviour>();
+            if (doorRenderer == null) doorRenderer = GetComponent<Renderer>();
 
             if (marker == null || world == null || world.GroundTilemap == null)
             {
@@ -29,88 +44,85 @@ namespace GGJ2026
                 return;
             }
 
-            // 1) 先计算并写入 cell（避免 Open/Close 用错格子）
+            // 计算门所在格子
             var c = world.GroundTilemap.WorldToCell(transform.position);
             marker.cell = (Vector2Int)c;
 
-            // 2) 再按 startClosed 应用初始状态（会正确 Add/Remove 到该 cell）
+            // 初始状态
             isOpen = !marker.startClosed;
             if (marker.startClosed) Close();
             else Open();
-            
-
-            ApplyVisual(isOpen);
         }
-
-        private readonly HashSet<string> activeIds = new();
 
         private void OnEnable()
         {
-            ButtonManager.OnButtonSignal += HandleSignal;
+            ButtonManager.OnButtonLatched += HandleButtonLatched;
         }
 
         private void OnDisable()
         {
-            ButtonManager.OnButtonSignal -= HandleSignal;
+            ButtonManager.OnButtonLatched -= HandleButtonLatched;
         }
 
-
-        private readonly HashSet<string> pressed = new();
-
-        private void HandleSignal(string id, bool active, BaseActor actor, Vector2Int cell)
+        private void HandleButtonLatched(string id, BaseActor actor, Vector2Int cell)
         {
             if (marker == null || marker.listenIds == null || marker.listenIds.Count == 0) return;
+            if (string.IsNullOrWhiteSpace(id)) return;
+            if (isOpen && openOnce) return;
+
+            // 只关心门配置的 ids
             if (!marker.listenIds.Contains(id)) return;
 
-            if (active) activeIds.Add(id);
-            else activeIds.Remove(id);
+            // 记录已触发的按钮 id（Latch：只增不减）
+            latchedIds.Add(id);
 
-            // AND：全部激活才开门，否则关门
-            if (AllRequiredActive()) Open();
-            else Close();
+            // AND：全部满足才开门
+            if (AllRequiredLatched())
+                Open();
         }
-        
-        private bool AllRequiredActive()
+
+        private bool AllRequiredLatched()
         {
             for (int i = 0; i < marker.listenIds.Count; i++)
             {
                 var req = marker.listenIds[i];
                 if (string.IsNullOrWhiteSpace(req)) continue;
-                if (!activeIds.Contains(req)) return false;
+
+                // 如果你希望“门在场景加载时就尊重已经 latched 的按钮状态”
+                // 可以改为：if (!(latchedIds.Contains(req) || ButtonManager.IsLatched(req))) return false;
+                if (!latchedIds.Contains(req)) return false;
             }
             return true;
         }
 
         public void Open()
         {
-            if (marker == null || marker.cell == null) return;
+            if (world == null || marker == null) return;
+            if (isOpen) return;
 
-            // 逻辑：移除阻挡
-            world?.RemoveBlocks(marker.cell);
+            // Vector2Int 是值类型，不要判 null
+            world.RemoveBlocks(marker.cell);
 
             isOpen = true;
-            ApplyVisual(isOpen);
+            ApplyVisual(true);
         }
 
         public void Close()
         {
-            if (marker == null || marker.cell == null) return;
+            if (world == null || marker == null) return;
+            if (!isOpen) return;
 
-            // 逻辑：添加阻挡
-            world?.AddBlocks(marker.cell);
+            world.AddBlocks(marker.cell);
 
             isOpen = false;
-            ApplyVisual(isOpen);
-
+            ApplyVisual(false);
         }
 
         private void ApplyVisual(bool open)
         {
-            // 你可以按需求替换为 Animator 参数、SpriteRenderer 切图、播放音效等
-            var v = doorVisual != null ? doorVisual : gameObject;
-
-            // 例：开门 = 隐藏门外观（或播放开门动画）
-            v.GetComponent<Renderer>().enabled = !open;
+            // 简单表现：开门隐藏渲染（你也可以换 Animator）
+            if (doorRenderer != null)
+                doorRenderer.enabled = !open;
         }
     }
 }
