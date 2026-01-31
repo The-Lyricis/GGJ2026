@@ -162,12 +162,24 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dcde76fb28ca6de44bf525cb1ab932c0, type: 3}
   levelMusicConfigs:
   - sceneBuildIndex: 0
-    musicClip: {fileID: 0}
-    loop: 0
-    volume: 0
-  defaultMusic: {fileID: 0}
+    musicClip: {fileID: 8300000, guid: 4c0c12dcc62e2884a83a568ca9495770, type: 3}
+    loop: 1
+    volume: 0.2
+  - sceneBuildIndex: 1
+    musicClip: {fileID: 8300000, guid: c558b0533a08d974087bed84c665f049, type: 3}
+    loop: 1
+    volume: 0.275
+  - sceneBuildIndex: 2
+    musicClip: {fileID: 8300000, guid: 37a52b947fc4ad4478d12f8eb513c262, type: 3}
+    loop: 1
+    volume: 0.275
+  - sceneBuildIndex: 3
+    musicClip: {fileID: 8300000, guid: 37a52b947fc4ad4478d12f8eb513c262, type: 3}
+    loop: 1
+    volume: 0.275
+  defaultMusic: {fileID: 8300000, guid: 37a52b947fc4ad4478d12f8eb513c262, type: 3}
   defaultLoop: 1
-  defaultMusicVolume: 1
+  defaultMusicVolume: 0.379
 --- !u!114 &959748719
 MonoBehaviour:
   m_ObjectHideFlags: 0
