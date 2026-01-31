@@ -9,6 +9,8 @@ namespace GGJ2026
         bool IsBlocked(Vector2Int cell);
         bool IsIce(Vector2Int cell);
 
+        bool IsKillFloor(Vector2Int cell);
+
         bool IsOccupied(Vector2Int cell);
         BaseActor GetOccupant(Vector2Int cell);
 
@@ -17,7 +19,7 @@ namespace GGJ2026
 
         bool IsExitCell(Vector2Int cell);
 
-        void MoveActor(BaseActor actor, Vector2Int toCell);
+        float MoveActor(BaseActor actor, Vector2Int toCell);
         Vector2Int GetActorCell(BaseActor actor);
         bool TryGetButton(Vector2Int cell, out ButtonDef def);
         bool TryConsumeMask(Vector2Int cell, out FactionColor color);

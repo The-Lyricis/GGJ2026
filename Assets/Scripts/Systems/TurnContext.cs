@@ -135,14 +135,17 @@ namespace GGJ2026
             }
         }
 
-        public void ApplyMoves(IGridWorld world)
+        public float ApplyMoves(IGridWorld world)
         {
+            float max = 0f;
             foreach (var kv in pendingMoves)
             {
-                if (kv.Key == null || !kv.Key.IsAlive) continue;
-                world.MoveActor(kv.Key, kv.Value);
+                if (!kv.Key.IsAlive) continue;
+                float d = world.MoveActor(kv.Key, kv.Value);
+                if (d > max) max = d;
             }
             pendingMoves.Clear();
+            return max;
         }
 
         /// <summary>
@@ -157,7 +160,13 @@ namespace GGJ2026
                 if (a == null || !a.IsAlive) continue;
 
                 var cell = world.GetActorCell(a);
-
+                
+                // kill floor
+                if (world.IsKillFloor(cell))
+                {
+                    a.Kill();
+                    continue; // 死了就不再处理面具/按钮/出口
+                }
                 // mask
                 if (a is PlayerActor player)
                 {
@@ -182,5 +191,7 @@ namespace GGJ2026
 
             ButtonManager.SignalLatch(def.id, a, cell);
         }
+
+        
     }
 }

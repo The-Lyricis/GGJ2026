@@ -126,6 +126,12 @@ namespace GGJ2026
             OnKilled?.Invoke(this);
             gameObject.SetActive(false);
         }
+
+        public virtual float PlayMoveAnimation(Vector3 from, Vector3 to, int tiles)
+        {
+            // 默认无动画
+            return 0f;
+        }
     }
 }
 

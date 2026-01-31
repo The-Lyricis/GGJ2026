@@ -21,6 +21,8 @@ namespace GGJ2026
 
         [Header("Surface Tiles")]
         [SerializeField] private List<TileBase> iceTiles = new();
+        [SerializeField] private List<TileBase> killTiles = new();
+    
 
         [Header("Marker Tiles")]
         [SerializeField] private List<ButtonDef> buttonDefs = new();
@@ -31,6 +33,8 @@ namespace GGJ2026
 
         // ===== Runtime caches (O(1) lookup) =====
         private HashSet<TileBase> iceSet;
+        private HashSet<TileBase> killSet;
+
         private Dictionary<TileBase, ButtonDef> buttonMap;
         private HashSet<TileBase> exitSet;
         private Dictionary<TileBase, FactionColor> maskMap;
@@ -85,6 +89,18 @@ namespace GGJ2026
                     if (t != null) iceSet.Add(t);
                 }
             }
+            // kill
+            killSet = new HashSet<TileBase>();
+            if (killTiles != null)
+            {
+                for (int i = 0; i < killTiles.Count; i++)
+                {
+                    var t = killTiles[i];
+                    if (t != null) killSet.Add(t);
+                }
+            }
+
+
             //Buttons
             buttonMap = new Dictionary<TileBase, ButtonDef>();
             var idSet = new HashSet<string>();
@@ -186,6 +202,13 @@ namespace GGJ2026
             return tile != null && iceSet != null && iceSet.Contains(tile);
         }
 
+        public bool IsKillFloor(Vector2Int cell)
+        {
+            if (surfaceTilemap == null) return false;
+            var tile = surfaceTilemap.GetTile((Vector3Int)cell);
+            return tile != null && killSet != null && killSet.Contains(tile);
+        }
+
         public bool IsOccupied(Vector2Int cell) => occupancy.ContainsKey(cell);
 
         public BaseActor GetOccupant(Vector2Int cell)
@@ -222,20 +245,38 @@ namespace GGJ2026
             return tile != null && exitSet != null && exitSet.Contains(tile);
         }
 
-        public void MoveActor(BaseActor actor, Vector2Int toCell)
+        // public void MoveActor(BaseActor actor, Vector2Int toCell)
+        // {
+        //     if (actor == null) return;
+
+        //     var fromCell = actorCell.TryGetValue(actor, out var f) ? f : toCell;
+        //     var fromWorld = actor.transform.position;
+        //     var toWorld = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
+
+        //     occupancy.Remove(fromCell);
+        //     occupancy[toCell] = actor;
+        //     actorCell[actor] = toCell;
+
+        //     int tiles = Mathf.Abs(toCell.x - fromCell.x) + Mathf.Abs(toCell.y - fromCell.y);
+        //     actor.PlayMoveAnimation(fromWorld, toWorld, tiles);
+        // }
+
+        public float MoveActor(BaseActor actor, Vector2Int toCell)
         {
-            if (actor == null) return;
+            if (actor == null) return 0f;
 
-            if (actorCell.TryGetValue(actor, out var from))
-                occupancy.Remove(from);
-
+            var fromCell = actorCell.TryGetValue(actor, out var f) ? f : toCell;
+            occupancy.Remove(fromCell);
             occupancy[toCell] = actor;
             actorCell[actor] = toCell;
-            //Debug.Log($"[MoveActor] {actor.name} {from} -> {toCell}");
-            // 同步世界坐标（用 groundTilemap 或 Grid）
-            var worldPos = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
-            actor.transform.position = worldPos;
+
+            var fromWorld = actor.transform.position;
+            var toWorld = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
+
+            int tiles = Mathf.Abs(toCell.x - fromCell.x) + Mathf.Abs(toCell.y - fromCell.y);
+            return actor.PlayMoveAnimation(fromWorld, toWorld, tiles);
         }
+
 
         public Vector2Int GetActorCell(BaseActor actor)
             => actor != null && actorCell.TryGetValue(actor, out var c) ? c : Vector2Int.zero;

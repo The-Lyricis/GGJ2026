@@ -47,9 +47,14 @@ namespace GGJ2026
             if (player == null || actor != player) return;
             Debug.LogWarning("Game Over");
         }
-
+        private float inputLockTimer = 0.2f;
         private void Update()
         {
+            if (inputLockTimer > 0f)
+            {
+                inputLockTimer -= Time.deltaTime;
+                return;
+            }
             if (Input.GetKeyDown(KeyCode.W) ||
                 Input.GetKeyDown(KeyCode.A) ||
                 Input.GetKeyDown(KeyCode.S) ||
@@ -135,7 +140,8 @@ namespace GGJ2026
             }
 
             // 4) apply moves
-            ctx.ApplyMoves(world);
+            float animTime = ctx.ApplyMoves(world);
+            inputLockTimer = animTime*0.9f;
 
             // 5) triggers (Latch-only button triggers happen here)
             ctx.ResolveTriggers(world, allActors);
