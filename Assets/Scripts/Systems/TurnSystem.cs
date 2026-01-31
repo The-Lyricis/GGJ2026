@@ -11,7 +11,6 @@ namespace GGJ2026
 
 
         private bool autoCollectOnAwake = true;
-        private bool includeInactiveActors = true;
 
         private void Reset()
         {
@@ -33,6 +32,23 @@ namespace GGJ2026
                 CollectSceneReferences();
         }
 
+        private void OnEnable()
+        {
+            if(player != null)
+                CollectSceneReferences();
+            if(player != null)
+                player.OnKilled += HandlePlayerKilled;
+        }
+
+        private void HandlePlayerKilled(BaseActor actor)
+        {
+            if (player == null || actor != player) return;
+            
+            //isGameOver = true;
+            
+            Debug.LogWarning("Game Over");
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.W) ||
@@ -52,15 +68,9 @@ namespace GGJ2026
                 world = FindFirstObjectByType<GridWorldBehaviour>();
 
             // 2) allActors
-#if UNITY_2023_1_OR_NEWER
-            var actors = FindObjectsByType<BaseActor>(
-                includeInactiveActors ? FindObjectsInactive.Include : FindObjectsInactive.Exclude,
-                FindObjectsSortMode.None
-            );
-#else
-            // 旧版本 Unity：FindObjectsOfType 默认不包含 inactive
+
             var actors = FindObjectsOfType<BaseActor>();
-#endif
+
             allActors.Clear();
             for (int i = 0; i < actors.Length; i++)
             {
