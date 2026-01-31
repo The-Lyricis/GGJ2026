@@ -12,6 +12,7 @@ namespace GGJ2026
         public GameState State = GameState.MainMenu;
 
         [SerializeField] private KeyCode resetKey = KeyCode.R;
+        [SerializeField] private KeyCode skipKey = KeyCode.P;
 
         private void Awake()
         {
@@ -37,6 +38,8 @@ namespace GGJ2026
 
             if (Input.GetKeyDown(resetKey))
                 ReloadCurrentLevel();
+            if (Input.GetKeyDown(skipKey))
+                LevelManager.Instance.LoadNextLevel();
         }
 
         /// <summary>

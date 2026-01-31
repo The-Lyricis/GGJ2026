@@ -46,6 +46,11 @@ namespace GGJ2026
 
             return duration;
         }
+        public override void Kill()
+        {
+            LevelManager.Instance.RestartCurrentLevel();
+            base.Kill();
+        }
 
 
     }
