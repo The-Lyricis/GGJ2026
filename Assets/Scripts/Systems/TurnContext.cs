@@ -170,7 +170,7 @@ namespace GGJ2026
 
                 // exit
                 if (a is PlayerActor && world.IsExitCell(cell))
-                    Debug.LogWarning("Player is on exit");
+                    LevelManager.Instance?.LoadNextLevel();
             }
         }
 
