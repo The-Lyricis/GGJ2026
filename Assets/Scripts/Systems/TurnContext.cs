@@ -164,7 +164,14 @@ namespace GGJ2026
                 // kill floor
                 if (world.IsKillFloor(cell))
                 {
-                    a.Kill();
+                    if(a is GreenActor) 
+                    {
+                        // Green actors are immune to kill floors
+                    }
+                    else
+                    {
+                        a.Kill();
+                    }
                     continue; // 死了就不再处理面具/按钮/出口
                 }
                 // mask
