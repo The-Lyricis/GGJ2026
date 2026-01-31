@@ -61,6 +61,7 @@ namespace GGJ2026
 
         private void OnStartClicked()
         {
+            AudioManager.Instance.PlaySFX("UIClick");
             // 进入第一关 + 切到 Playing
             if (LevelManager.Instance != null)
                 LevelManager.Instance.LoadLevel(firstLevelIndex);
@@ -73,6 +74,7 @@ namespace GGJ2026
 
         private void OnContinueClicked()
         {
+            AudioManager.Instance.PlaySFX("UIClick");
             int levelToLoad = GetContinueLevelIndex();
 
             if (LevelManager.Instance != null)
@@ -86,6 +88,7 @@ namespace GGJ2026
 
         private void OnQuitClicked()
         {
+            AudioManager.Instance.PlaySFX("UIClick");
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #else
