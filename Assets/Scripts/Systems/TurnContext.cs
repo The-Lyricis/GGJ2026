@@ -9,13 +9,13 @@ namespace GGJ2026
 
         private readonly Dictionary<BaseActor, MoveIntent> intents = new();
 
-                // Planned moves for this turn
+        // Planned moves for this turn
         private readonly Dictionary<BaseActor, Vector2Int> pendingMoves = new();
 
-                // Start-of-turn occupancy snapshot
+        // Start-of-turn occupancy snapshot
         private readonly Dictionary<Vector2Int, BaseActor> occupancySnapshot = new();
 
-                // Reserved target cells for this turn
+        // Reserved target cells for this turn
         private readonly Dictionary<Vector2Int, BaseActor> reservedTargets = new();
 
         public void BuildSnapshot(List<BaseActor> actors, IGridWorld world)
@@ -48,7 +48,7 @@ namespace GGJ2026
             reservedTargets[cell] = a;
         }
 
-        
+
         // Resolve a single actor move for this turn
         public Vector2Int ResolveMovement(BaseActor a, Vector2Int from, MoveDir dir, IGridWorld world)
         {
@@ -57,7 +57,7 @@ namespace GGJ2026
             var delta = MoveUtil.DirToDelta(dir);
             if (delta == Vector2Int.zero) return from;
 
-                        // Block check uses snapshot + reserved targets
+            // Block check uses snapshot + reserved targets
             bool IsBlocked(Vector2Int cell, MoveDir moveDir, FactionColor color, FactionColor combatColor)
             {
                 if (!world.InBounds(cell) || world.IsWall(cell)) return true;
@@ -87,7 +87,7 @@ namespace GGJ2026
                 return false;
             }
 
-                        // Buttons/masks are treated as mechanisms
+            // Buttons/masks are treated as mechanisms
             bool IsMechanism(Vector2Int cell)
                 => world.IsButtonCell(cell) || world.IsMaskCell(cell, out _);
 
@@ -96,19 +96,19 @@ namespace GGJ2026
 
             var next = from + delta;
 
-                        // Normal ground movement
+            // Normal ground movement
             if (!world.IsIce(from) && !world.IsIce(next))
             {
                 return IsBlocked(next, dir, color, combat) ? from : next;
             }
 
-                        // Entering ice: if the first ice cell is blocked, stay
+            // Entering ice: if the first ice cell is blocked, stay
             if (!world.IsIce(from) && world.IsIce(next) && IsBlocked(next, dir, color, combat))
             {
                 return from;
             }
 
-                        // Ice sliding (or sliding after entering ice)
+            // Ice sliding (or sliding after entering ice)
             var current = from;
             while (true)
             {
@@ -158,11 +158,12 @@ namespace GGJ2026
 
                 if (a is PlayerActor && world.IsExitCell(cell))
                 {
+                    Debug.LogWarning("Player is on exit");
                 }
             }
         }
 
-        
+
 
     }
 }
