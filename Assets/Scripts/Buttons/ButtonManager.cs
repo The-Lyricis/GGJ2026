@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GGJ2026
@@ -9,21 +10,51 @@ namespace GGJ2026
     /// </summary>
     public static class ButtonManager
     {
-        /// <summary>
-        /// Fired when a button is triggered.
-        /// id: logical id of button; actor: who triggered; cell: where it happened.
-        /// </summary>
-        public static event Action<string, BaseActor, Vector2Int> OnButtonTriggered;
+        public static event Action<string, bool, BaseActor, Vector2Int> OnButtonSignal;
 
-        public static void Trigger(string id, BaseActor actor, Vector2Int cell)
+        private static readonly HashSet<string> latched = new();
+        private static readonly Dictionary<string, int> heldCounts = new();
+
+        public static void ResetAll()
         {
-            if (string.IsNullOrWhiteSpace(id))
+            latched.Clear();
+            heldCounts.Clear();
+        }
+
+        public static bool SignalLatch(string id, BaseActor actor, Vector2Int cell)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return false;
+            if (latched.Contains(id)) return false;
+
+            latched.Add(id);
+            OnButtonSignal?.Invoke(id, true, actor, cell);
+            return true;
+        }
+
+        public static bool SignalHold(string id, bool active, BaseActor actor, Vector2Int cell)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return false;
+
+            heldCounts.TryGetValue(id, out var count);
+            count = active ? count + 1 : Mathf.Max(0, count - 1);
+
+            bool wasActive = heldCounts.TryGetValue(id, out var prev) && prev > 0;
+            bool isActive = count > 0;
+
+            heldCounts[id] = count;
+
+            if (wasActive != isActive)
             {
-                Debug.LogWarning("[ButtonManager] Trigger called with empty id.");
-                return;
+                OnButtonSignal?.Invoke(id, isActive, actor, cell);
+                return true;
             }
 
-            OnButtonTriggered?.Invoke(id, actor, cell);
+            return false;
         }
+
+        // 给 DoorTrigger 或调试用：查询当前是否 active（Latch 或 Hold）
+        public static bool IsActive(string id)
+            => latched.Contains(id) || (heldCounts.TryGetValue(id, out var c) && c > 0);
+    
     }
 }

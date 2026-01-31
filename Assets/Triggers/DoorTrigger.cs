@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GGJ2026
@@ -41,31 +42,43 @@ namespace GGJ2026
             ApplyVisual(isOpen);
         }
 
+        private readonly HashSet<string> activeIds = new();
+
         private void OnEnable()
         {
-            ButtonManager.OnButtonTriggered += HandleButton;
+            ButtonManager.OnButtonSignal += HandleSignal;
         }
 
         private void OnDisable()
         {
-            ButtonManager.OnButtonTriggered -= HandleButton;
+            ButtonManager.OnButtonSignal -= HandleSignal;
         }
 
-        private void HandleButton(string id, BaseActor actor, Vector2Int cell)
-        {
-            if (string.IsNullOrWhiteSpace(marker?.id)) return;
-            if (id != marker.id) return;
 
-            if (toggleOnTrigger)
+        private readonly HashSet<string> pressed = new();
+
+        private void HandleSignal(string id, bool active, BaseActor actor, Vector2Int cell)
+        {
+            if (marker == null || marker.listenIds == null || marker.listenIds.Count == 0) return;
+            if (!marker.listenIds.Contains(id)) return;
+
+            if (active) activeIds.Add(id);
+            else activeIds.Remove(id);
+
+            // AND：全部激活才开门，否则关门
+            if (AllRequiredActive()) Open();
+            else Close();
+        }
+        
+        private bool AllRequiredActive()
+        {
+            for (int i = 0; i < marker.listenIds.Count; i++)
             {
-                if (isOpen) Close();
-                else Open();
+                var req = marker.listenIds[i];
+                if (string.IsNullOrWhiteSpace(req)) continue;
+                if (!activeIds.Contains(req)) return false;
             }
-            else
-            {
-                if (openOnTrigger) Open();
-                else Close();
-            }
+            return true;
         }
 
         public void Open()
@@ -77,7 +90,6 @@ namespace GGJ2026
 
             isOpen = true;
             ApplyVisual(isOpen);
-            Debug.Log($"[DoorTrigger] Opened door {marker.id}");
         }
 
         public void Close()
@@ -89,7 +101,7 @@ namespace GGJ2026
 
             isOpen = false;
             ApplyVisual(isOpen);
-            Debug.Log($"[DoorTrigger] Closed door {marker.id}");
+
         }
 
         private void ApplyVisual(bool open)
@@ -98,7 +110,7 @@ namespace GGJ2026
             var v = doorVisual != null ? doorVisual : gameObject;
 
             // 例：开门 = 隐藏门外观（或播放开门动画）
-            //v.SetActive(!open);
+            v.GetComponent<Renderer>().enabled = !open;
         }
     }
 }

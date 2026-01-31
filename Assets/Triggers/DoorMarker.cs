@@ -1,12 +1,13 @@
 
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+
 
 namespace GGJ2026
 {
     public class DoorMarker : MonoBehaviour
     {
-        public string id;
+        public List<string> listenIds = new();
         [HideInInspector]
         public Vector2Int cell;
         public bool startClosed = true;

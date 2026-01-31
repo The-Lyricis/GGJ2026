@@ -24,7 +24,12 @@ namespace GGJ2026
 
         [Tooltip("If true, only triggers when an actor enters the cell (edge trigger). " +
                  "If false, triggers every turn while standing on the cell.")]
-        public bool triggerOnEnterOnly = false;
+        public enum ButtonTriggerMode
+        {
+            Latch, // 按到一次就算触发（可选：仅Enter触发一次）
+            Hold   // 必须有人站在上面才算触发，离开就释放
+        }
+        public ButtonTriggerMode triggerMode = ButtonTriggerMode.Latch;
 
         // ===== Runtime cache (optional but recommended) =====
         [System.NonSerialized] private HashSet<FactionColor> allowSet;
