@@ -23,22 +23,30 @@ namespace GGJ2026
         [SerializeField] private List<TileBase> iceTiles = new();
 
         [Header("Marker Tiles")]
-        [SerializeField] private List<TileBase> buttonTiles = new();
+        [SerializeField] private List<ButtonDef> buttonDefs = new();
+        
+
         [SerializeField] private List<TileBase> exitTiles = new();
         [SerializeField] private List<MaskTileDef> maskTiles = new();
 
         // ===== Runtime caches (O(1) lookup) =====
         private HashSet<TileBase> iceSet;
-        private HashSet<TileBase> buttonSet;
+        private Dictionary<TileBase, ButtonDef> buttonMap;
         private HashSet<TileBase> exitSet;
         private Dictionary<TileBase, FactionColor> maskMap;
+
+        // Runtime blocking cells
+        private readonly HashSet<Vector2Int> blockCells = new();
 
         private readonly Dictionary<BaseActor, Vector2Int> actorCell = new();
         private readonly Dictionary<Vector2Int, BaseActor> occupancy = new();
 
+        public  Tilemap GroundTilemap {get => groundTilemap;}
+        
         private void Awake()
         {
             BuildTileCaches();
+            BuildBlockCells();
         }
 
 #if UNITY_EDITOR
@@ -67,6 +75,7 @@ namespace GGJ2026
         /// </summary>
         private void BuildTileCaches()
         {
+            //ice
             iceSet = new HashSet<TileBase>();
             if (iceTiles != null)
             {
@@ -76,17 +85,35 @@ namespace GGJ2026
                     if (t != null) iceSet.Add(t);
                 }
             }
+            //Buttons
+            buttonMap = new Dictionary<TileBase, ButtonDef>();
+            var idSet = new HashSet<string>();
 
-            buttonSet = new HashSet<TileBase>();
-            if (buttonTiles != null)
+            if (buttonDefs != null)
             {
-                for (int i = 0; i < buttonTiles.Count; i++)
+                for (int i = 0; i < buttonDefs.Count; i++)
                 {
-                    var t = buttonTiles[i];
-                    if (t != null) buttonSet.Add(t);
+                    var def = buttonDefs[i];
+                    if (def == null || def.tile == null) continue;
+
+                    // runtime cache
+                    def.BuildRuntimeCache();
+
+                    // tile -> def
+                    buttonMap[def.tile] = def;
+
+                    // id sanity check
+                    if (string.IsNullOrWhiteSpace(def.id))
+                    {
+                        Debug.LogWarning($"[GridWorld] ButtonDef has empty id (tile={def.tile.name}).", this);
+                    }
+                    else if (!idSet.Add(def.id))
+                    {
+                        Debug.LogWarning($"[GridWorld] Duplicate ButtonDef id: {def.id}", this);
+                    }
                 }
             }
-
+            
             exitSet = new HashSet<TileBase>();
             if (exitTiles != null)
             {
@@ -111,6 +138,35 @@ namespace GGJ2026
             }
         }
 
+        private void BuildBlockCells()
+        {
+            blockCells.Clear();
+
+            if (wallTilemap != null)
+            {
+                var bounds = wallTilemap.cellBounds;
+                for (int x = bounds.xMin; x < bounds.xMax; x++)
+                {
+                    for (int y = bounds.yMin; y < bounds.yMax; y++)
+                    {
+                        var cell = new Vector3Int(x, y, 0);
+                        if (wallTilemap.HasTile(cell))
+                            blockCells.Add((Vector2Int)cell);
+                    }
+                }
+            }
+
+            var doors = FindObjectsOfType<DoorMarker>();
+            for (int i = 0; i < doors.Length; i++)
+            {
+                var door = doors[i];
+                if (door == null) continue;
+                if (!door.startClosed) continue;
+                
+                blockCells.Add(door.cell);
+            }
+        }
+
         public bool InBounds(Vector2Int cell)
         {
             if (groundTilemap == null) return true;
@@ -119,9 +175,9 @@ namespace GGJ2026
 
         public bool IsWall(Vector2Int cell)
         {
-            if (wallTilemap == null) return false;
-            return wallTilemap.HasTile((Vector3Int)cell);
+            return blockCells.Contains(cell);
         }
+        public bool IsBlocked(Vector2Int cell) => blockCells.Contains(cell);
 
         public bool IsIce(Vector2Int cell)
         {
@@ -145,13 +201,19 @@ namespace GGJ2026
 
             return maskMap != null && maskMap.TryGetValue(tile, out color);
         }
-
-        public bool IsButtonCell(Vector2Int cell)
+        
+        public bool TryGetButton(Vector2Int cell, out ButtonDef def)
         {
+            def = null;
             if (markerTilemap == null) return false;
+
             var tile = markerTilemap.GetTile((Vector3Int)cell);
-            return tile != null && buttonSet != null && buttonSet.Contains(tile);
+            if (tile == null) return false;
+
+            return buttonMap != null && buttonMap.TryGetValue(tile, out def);
         }
+
+        public bool IsButtonCell(Vector2Int cell) => TryGetButton(cell, out _);
 
         public bool IsExitCell(Vector2Int cell)
         {
@@ -169,7 +231,7 @@ namespace GGJ2026
 
             occupancy[toCell] = actor;
             actorCell[actor] = toCell;
-             Debug.Log($"[MoveActor] {actor.name} {from} -> {toCell}");
+            //Debug.Log($"[MoveActor] {actor.name} {from} -> {toCell}");
             // 同步世界坐标（用 groundTilemap 或 Grid）
             var worldPos = groundTilemap.GetCellCenterWorld((Vector3Int)toCell);
             actor.transform.position = worldPos;
@@ -207,6 +269,31 @@ namespace GGJ2026
 
             markerTilemap.SetTile((Vector3Int)cell, null); // 清掉面具图块
             return true;
+        }
+
+        
+        public void AddBlocks(Vector2Int[] cells)
+        {
+            if (cells == null) return;
+            for (int i = 0; i < cells.Length; i++)
+                blockCells.Add(cells[i]);
+        }
+
+        public void RemoveBlocks(Vector2Int[] cells)
+        {
+            if (cells == null) return;
+            for (int i = 0; i < cells.Length; i++)
+                blockCells.Remove(cells[i]);
+        }
+        public void AddBlocks(Vector2Int cell)
+        {
+            blockCells.Add(cell);
+        }
+        
+        
+        public void RemoveBlocks(Vector2Int cell)
+        {
+            blockCells.Remove(cell);
         }
 
     }

@@ -60,7 +60,7 @@ namespace GGJ2026
             // Block check uses snapshot + reserved targets
             bool IsBlocked(Vector2Int cell, MoveDir moveDir, FactionColor color, FactionColor combatColor)
             {
-                if (!world.InBounds(cell) || world.IsWall(cell)) return true;
+                if (!world.InBounds(cell) || world.IsBlocked(cell)) return true;
 
                 if (reservedTargets.TryGetValue(cell, out var r) && r != null && r.IsAlive)
                     return true;
@@ -152,8 +152,14 @@ namespace GGJ2026
                     }
                 }
 
-                if (world.IsButtonCell(cell))
+                if (world is GridWorldBehaviour gw && gw.TryGetButton(cell, out var def))
                 {
+                    //Normal 或 ColorOnly 且颜色匹配
+                    if (def != null && def.IsAllowed(a))
+                    {
+                        Debug.LogWarning($"{def.id},{a}, {cell}");
+                        ButtonManager.Trigger(def.id, a, cell);
+                    }
                 }
 
                 if (a is PlayerActor && world.IsExitCell(cell))
