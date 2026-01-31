@@ -117,6 +117,14 @@ namespace GGJ2026
             // 3) Solve movement (front-to-back by direction)
             this.ResolveMovement(ctx);
 
+            // 3.0) Pre-resolve buttons to update doors in the same turn
+            bool buttonChanged = ctx.PreResolveButtons(world, allActors);
+            if (buttonChanged)
+            {
+                ctx.ClearPlannedMoves();
+                this.ResolveMovement(ctx);
+            }
+
             // 3.1) Decide if player is blocked using planned moves
             var playerFrom = world.GetActorCell(player);
             bool playerBlocked = false;
@@ -146,6 +154,16 @@ namespace GGJ2026
                 this.ResolveMovement(ctx);
             }
 
+            // 3.3) Re-check buttons if moves changed by player-blocked rule
+            buttonChanged = ctx.PreResolveButtons(world, allActors);
+            if (buttonChanged)
+            {
+                ctx.ClearPlannedMoves();
+                this.ResolveMovement(ctx);
+            }
+            
+            ctx.CapturePrevCells(world, allActors);
+            
             // 4) Apply moves
             ctx.ApplyMoves(world);
 

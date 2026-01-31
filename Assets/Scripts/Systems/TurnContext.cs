@@ -18,6 +18,9 @@ namespace GGJ2026
         // Reserved target cells for this turn
         private readonly Dictionary<Vector2Int, BaseActor> reservedTargets = new();
 
+        // 上一回合每个 actor 的格子
+        private readonly Dictionary<BaseActor, Vector2Int> prevCell = new();
+
         public void BuildSnapshot(List<BaseActor> actors, IGridWorld world)
         {
             occupancySnapshot.Clear();
@@ -47,6 +50,17 @@ namespace GGJ2026
             pendingMoves[a] = cell;
             reservedTargets[cell] = a;
         }
+        public void CapturePrevCells(IGridWorld world, List<BaseActor> actors)
+        {
+            prevCell.Clear();
+            for (int i = 0; i < actors.Count; i++)
+            {
+                var a = actors[i];
+                if (a == null || !a.IsAlive) continue;
+                prevCell[a] = world.GetActorCell(a);
+            }
+        }
+
 
 
         // Resolve a single actor move for this turn
@@ -60,7 +74,7 @@ namespace GGJ2026
             // Block check uses snapshot + reserved targets
             bool IsBlocked(Vector2Int cell, MoveDir moveDir, FactionColor color, FactionColor combatColor)
             {
-                if (!world.InBounds(cell) || world.IsWall(cell)) return true;
+                if (!world.InBounds(cell) || world.IsBlocked(cell)) return true;
 
                 if (reservedTargets.TryGetValue(cell, out var r) && r != null && r.IsAlive)
                     return true;
@@ -139,29 +153,62 @@ namespace GGJ2026
             for (int i = 0; i < actors.Count; i++)
             {
                 var a = actors[i];
-                if (!a.IsAlive) continue;
+                if (a == null || !a.IsAlive) continue;
 
-                var cell = world.GetActorCell(a);
+                var to = world.GetActorCell(a);
+                var from = prevCell.TryGetValue(a, out var p) ? p : to;
 
+                // ===== mask (current cell) =====
                 if (a is PlayerActor player)
                 {
-                    if (world.IsMaskCell(cell, out var color) && world.TryConsumeMask(cell, out color))
-                    {
-
-                        player.EquipMask(color); // 切换控制色/战斗色 + 切 Mind
-                    }
+                    if (world.IsMaskCell(to, out var color) && world.TryConsumeMask(to, out color))
+                        player.EquipMask(color);
                 }
 
-                if (world.IsButtonCell(cell))
-                {
-                }
-
-                if (a is PlayerActor && world.IsExitCell(cell))
-                {
+                // ===== exit (current cell) =====
+                if (a is PlayerActor && world.IsExitCell(to))
                     Debug.LogWarning("Player is on exit");
-                }
             }
         }
+
+        public bool PreResolveButtons(IGridWorld world, List<BaseActor> actors)
+        {
+            if (world is not GridWorldBehaviour gw) return false;
+
+            bool changed = false;
+            for (int i = 0; i < actors.Count; i++)
+            {
+                var a = actors[i];
+                if (a == null || !a.IsAlive) continue;
+
+                var from = world.GetActorCell(a);
+
+                var to = pendingMoves.TryGetValue(a, out var planned) ? planned : from;
+
+                if (from != to)
+                {
+                    changed |= HandleButtonEdge(gw, a, from, active: false);
+                    changed |= HandleButtonEdge(gw, a, to, active: true);
+                }
+            }
+
+            return changed;
+        }
+
+        private bool HandleButtonEdge(GridWorldBehaviour gw, BaseActor a, Vector2Int cell, bool active)
+        {
+            if (!gw.TryGetButton(cell, out var def)) return false;
+            if (def == null || !def.IsAllowed(a)) return false;
+
+            if (def.triggerMode == ButtonDef.ButtonTriggerMode.Latch)
+            {
+                if (!active) return false;
+                return ButtonManager.SignalLatch(def.id, a, cell);
+            }
+
+            return ButtonManager.SignalHold(def.id, active, a, cell);
+        }
+
 
 
 
