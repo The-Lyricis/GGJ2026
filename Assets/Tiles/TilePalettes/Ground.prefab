@@ -1337,7 +1337,7 @@ Tilemap:
   - m_RefCount: 1
     m_Data: {fileID: 11400000, guid: e01860dee19299f4782ba30d5612eb0e, type: 2}
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: 72e6f7464786d5b4fa62d84e136bebbb, type: 2}
+    m_Data: {fileID: 11400000, guid: 3d374bb3a118b894bb489df83b0aee5d, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 3
     m_Data: {fileID: -384635766, guid: 96df1c831b021cf4194398a6b7296961, type: 3}
@@ -1537,6 +1537,8 @@ Tilemap:
     m_Data: {fileID: 21300000, guid: 7d19d4a3fc0dc724696d695099c4c725, type: 3}
   - m_RefCount: 4
     m_Data: {fileID: 21300000, guid: e7636c52bdbaeaf439c9d62a6f8141b3, type: 3}
+  - m_RefCount: 0
+    m_Data: {fileID: 0}
   m_TileMatrixArray:
   - m_RefCount: 1
     m_Data:
@@ -1703,7 +1705,7 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
---- !u!114 &6855199598018939081
+--- !u!114 &3225078995558321034
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
