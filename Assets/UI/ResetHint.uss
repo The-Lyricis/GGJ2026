@@ -1,0 +1,20 @@
+.reset-hint-root {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+
+    background-color: rgba(0, 0, 0, 0.55);
+    border-radius: 6px;
+}
+
+.reset-hint-label {
+    -unity-font-style: bold;
+    font-size: 14px;
+    color: rgb(255, 255, 255);
+    unity-text-align: middle-center;
+}

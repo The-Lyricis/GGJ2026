@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="MainMenu.uss" />
+
+    <ui:VisualElement class="screen">
+        <!-- 背景装饰层（不影响交互） -->
+        <ui:VisualElement class="bgLayer">
+            <ui:VisualElement class="cornerGlow glowTL" />
+            <ui:VisualElement class="cornerGlow glowBR" />
+            <ui:VisualElement class="gridNoise" />
+        </ui:VisualElement>
+
+        <!-- 主卡片 -->
+        <ui:VisualElement name="menuRoot" class="menuCard">
+
+            <!-- 顶部：Logo -->
+            <ui:VisualElement class="logoWrap">
+                <!-- 这里是醒目的 Logo 位置：脚本里给它设置 backgroundImage -->
+                <ui:VisualElement name="logo" class="logo" />
+            </ui:VisualElement>
+
+            <!-- 标题区 -->
+            <ui:VisualElement class="header">
+                <ui:Label class="title" text="MY GAME" />
+                <ui:Label class="subtitle" text="A tiny puzzle adventure" />
+            </ui:VisualElement>
+
+            <!-- 按钮区 -->
+            <ui:VisualElement class="btnCol">
+                <ui:Button name="btnStart" class="menuBtn primary" text="Start Game" />
+                <ui:Button name="btnContinue" class="menuBtn" text="Continue" />
+                <ui:Button name="btnQuit" class="menuBtn danger" text="Quit" />
+            </ui:VisualElement>
+
+            <!-- 底部提示 -->
+            <ui:Label class="hint" text="Press Enter to Start" />
+        </ui:VisualElement>
+
+        <!-- 底部角标（可选） -->
+        <ui:Label class="footer" text="© GGJ 2026 Build" />
+    </ui:VisualElement>
+</ui:UXML>

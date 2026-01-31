@@ -1,0 +1,225 @@
+/* =========================
+   Main Menu (Cute / Gamey)
+   Unity 2022.3 friendly
+   ========================= */
+
+/* 全局字体：你已经成功的 url 写法，直接复用 */
+Label,
+Button,
+TextElement,
+.unity-label,
+.unity-button__text,
+.unity-text-element,
+.screen,
+.screen * {
+    -unity-font-definition: url("project://database/Assets/Resources/Fonts/Pixel.ttf");
+}
+
+/* 背景画布 */
+.screen {
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+
+    /* 更“游戏感”的深色渐变 */
+    background-color: rgb(12, 14, 22);
+}
+
+/* 背景装饰层 */
+.bgLayer {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+/* 角落光晕 */
+.cornerGlow {
+    position: absolute;
+    width: 520px;
+    height: 520px;
+    opacity: 0.28;
+
+    border-top-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-bottom-right-radius: 999px;
+}
+
+.glowTL {
+    left: -140px;
+    top: -140px;
+    background-color: rgba(120, 170, 255, 0.35);
+}
+
+.glowBR {
+    right: -180px;
+    bottom: -180px;
+    background-color: rgba(255, 140, 210, 0.28);
+}
+
+/* “噪点/网格”感：用半透明边框模拟 */
+.gridNoise {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+
+    /* 轻微发灰，避免纯黑死板 */
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* 主卡片：更聚焦、更像开始界面 */
+.menuCard {
+    width: 560px;
+    padding-left: 28px;
+    padding-right: 28px;
+    padding-top: 22px;
+    padding-bottom: 18px;
+
+    background-color: rgba(22, 26, 40, 235);
+
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+
+    border-left-color: rgba(255, 255, 255, 45);
+    border-right-color: rgba(255, 255, 255, 45);
+    border-top-color: rgba(255, 255, 255, 45);
+    border-bottom-color: rgba(255, 255, 255, 45);
+
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+/* Logo 区：醒目位置 */
+.logoWrap {
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+/* Logo 本体：用 background-image 显示 Sprite */
+.logo {
+    width: 220px;
+    height: 220px;
+
+    background-color: rgba(255, 255, 255, 0.04);
+
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+
+    border-left-color: rgba(140, 190, 255, 100);
+    border-right-color: rgba(140, 190, 255, 100);
+    border-top-color: rgba(140, 190, 255, 100);
+    border-bottom-color: rgba(140, 190, 255, 100);
+
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+
+    /* Sprite 的显示方式：居中，保持比例 */
+    -unity-background-scale-mode: scale-to-fit;
+    background-position: center;
+}
+
+/* 标题区 */
+.header {
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.title {
+    font-size: 44px;
+    color: rgb(245, 245, 245);
+}
+
+.subtitle {
+    font-size: 18px;
+    color: rgba(245, 245, 245, 180);
+    margin-top: 2px;
+}
+
+/* 按钮区 */
+.btnCol {
+    margin-top: 6px;
+    margin-bottom: 10px;
+}
+
+/* 基础按钮 */
+.menuBtn {
+    height: 56px;
+    font-size: 22px;
+
+    margin-bottom: 12px;
+
+    background-color: rgba(255, 255, 255, 18);
+
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+
+    border-left-color: rgba(255, 255, 255, 35);
+    border-right-color: rgba(255, 255, 255, 35);
+    border-top-color: rgba(255, 255, 255, 35);
+    border-bottom-color: rgba(255, 255, 255, 35);
+
+    border-top-left-radius: 14px;
+    border-top-right-radius: 14px;
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+
+    color: rgb(245, 245, 245);
+}
+
+/* 主按钮更醒目 */
+.menuBtn.primary {
+    background-color: rgba(120, 170, 255, 38);
+    border-left-color: rgba(120, 170, 255, 120);
+    border-right-color: rgba(120, 170, 255, 120);
+    border-top-color: rgba(120, 170, 255, 120);
+    border-bottom-color: rgba(120, 170, 255, 120);
+}
+
+/* hover：更亮 + 描边变色（不依赖 transform 动画） */
+.menuBtn:hover {
+    background-color: rgba(255, 255, 255, 28);
+    border-left-color: rgba(140, 190, 255, 90);
+    border-right-color: rgba(140, 190, 255, 90);
+    border-top-color: rgba(140, 190, 255, 90);
+    border-bottom-color: rgba(140, 190, 255, 90);
+}
+
+/* Quit hover：偏红 */
+.menuBtn.danger:hover {
+    border-left-color: rgba(255, 120, 120, 110);
+    border-right-color: rgba(255, 120, 120, 110);
+    border-top-color: rgba(255, 120, 120, 110);
+    border-bottom-color: rgba(255, 120, 120, 110);
+}
+
+/* 按下反馈：略暗（旧版稳） */
+.menuBtn:active {
+    background-color: rgba(255, 255, 255, 14);
+}
+
+/* 底部提示 */
+.hint {
+    margin-top: 6px;
+    font-size: 16px;
+    color: rgba(245, 245, 245, 190);
+    unity-text-align: middle-center;
+}
+
+/* 底部角标 */
+.footer {
+    position: absolute;
+    left: 14px;
+    bottom: 10px;
+    font-size: 14px;
+    color: rgba(245, 245, 245, 110);
+}

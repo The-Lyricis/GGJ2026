@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:Style src="ResetHint.uss" />
+    <ui:VisualElement name="root" class="reset-hint-root">
+        <ui:Label name="hintLabel" class="reset-hint-label" text="Press R to Reset" />
+    </ui:VisualElement>
+</ui:UXML>
