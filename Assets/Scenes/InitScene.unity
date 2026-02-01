@@ -195,6 +195,10 @@ MonoBehaviour:
   mainMenuPrefab: {fileID: 5000174584224605340, guid: cd061dfb076e82d428ba5db097072e10, type: 3}
   resetHintPrefab: {fileID: 6530368177567218366, guid: 89fda0561c18ce2458a458afc2661c00, type: 3}
   screenFaderPrefab: {fileID: 7549673749775053937, guid: 95b3e61419fc1004fa2a24d4f5da517a, type: 3}
+  showEnterHintOnSceneLoad: 1
+  defaultEnterHintText: 22222222222222
+  excludedScenes:
+  - MainMenu
 --- !u!114 &959748720
 MonoBehaviour:
   m_ObjectHideFlags: 0

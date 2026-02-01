@@ -127,6 +127,107 @@ Tilemap:
   m_CorrespondingSourceObject: {fileID: 206250323651360060, guid: f378f0631e9e8c941abf6ccc0d828edb, type: 3}
   m_PrefabInstance: {fileID: 1670053426}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &43345344
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 247909957414482453, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4165145677398385176, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_Name
+      value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6375797515894722821, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
+      propertyPath: m_Text
+      value: Spikes for everyone!
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6d0811506a039354b9653b3bb7344eb3, type: 3}
 --- !u!1839735485 &475154702 stripped
 Tilemap:
   m_CorrespondingSourceObject: {fileID: 841029798148100086, guid: f378f0631e9e8c941abf6ccc0d828edb, type: 3}
@@ -238,7 +339,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 5.48
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -16670,3 +16771,4 @@ SceneRoots:
   - {fileID: 1222611236}
   - {fileID: 1670053426}
   - {fileID: 1190046408}
+  - {fileID: 43345344}
