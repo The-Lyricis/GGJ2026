@@ -52,6 +52,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   player: {fileID: 0}
+  autoCollectOnAwake: 1
 --- !u!114 &3249548101146018525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,11 +71,14 @@ MonoBehaviour:
   markerTilemap: {fileID: 0}
   iceTiles:
   - {fileID: 11400000, guid: 2bc6fa313d0f9ed4c84f0d48f6a99aaf, type: 2}
-  buttonTiles: []
+  killTiles: []
+  buttonDefs: []
   exitTiles:
   - {fileID: 11400000, guid: d243d06b04ac7194a884c309e738a448, type: 2}
   maskTiles:
-  - tile: {fileID: 11400000, guid: 449a9819811ddf34790345a3d3cbab1f, type: 2}
+  - tile: {fileID: 11400000, guid: f84e0163dbfc6ac4bb38715724398c16, type: 2}
     color: 2
-  - tile: {fileID: 11400000, guid: 67301ea02fee05040a5530f12fcdf3e3, type: 2}
+  - tile: {fileID: 11400000, guid: 352759e3c95737344912150544404ebb, type: 2}
+    color: 0
+  - tile: {fileID: 11400000, guid: 90d5a72e662fc1847a6655a7b7b61d4b, type: 2}
     color: 0
