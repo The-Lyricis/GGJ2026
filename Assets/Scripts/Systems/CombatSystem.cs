@@ -5,15 +5,11 @@ namespace GGJ2026
 {
     public static class CombatSystem
     {
-        /// <summary>
-        /// 重合后才结算：按同一格子内的全部参与者进行一次性裁决。
-        /// 只处理战斗结果，不做阻挡合法性判定。
-        /// </summary>
         public static void Resolve(List<BaseActor> actors, IGridWorld world)
         {
             if (actors == null || world == null) return;
 
-            // 以格子为单位分组：同一格子内的 actor 视为一次冲突
+            // 以格子为单位分组
             Dictionary<Vector2Int, List<BaseActor>> groups = new();
             for (int i = 0; i < actors.Count; i++)
             {
@@ -34,32 +30,81 @@ namespace GGJ2026
                 var list = kv.Value;
                 if (list.Count <= 1) continue;
 
-                // 中立不参战
+                // 1) 把玩家单独拎出来（玩家不输出）
+                PlayerActor player = null;
+
+                // 2) 参与 Actor vs Actor 的战斗者（排除 GreenActor、中立；排除玩家）
                 List<BaseActor> fighters = new();
+
                 for (int i = 0; i < list.Count; i++)
                 {
                     var a = list[i];
-                    if (a.CombatColor == FactionColor.Green) continue;
+                    if (a == null || !a.IsAlive) continue;
+
+                    if (a is PlayerActor p)
+                    {
+                        player = p;
+                        continue;
+                    }
+
+                    // GreenActor 中立：不参战（注意这里用类型判断，不用 CombatColor 判断）
+                    if (a is GreenActor) continue;
+
                     fighters.Add(a);
                 }
 
-                if (fighters.Count <= 1) continue;
+                // A) 先结算 Actor vs Actor
+                ResolveActorVsActor(fighters);
 
-                // 一次性裁决：最高强度存活，其余死亡
-                int maxStrength = -1;
-                for (int i = 0; i < fighters.Count; i++)
+                // B) 再结算 Actor vs Player（玩家只可能被杀，不可能杀人）
+                if (player != null && player.IsAlive)
                 {
-                    int s = CombatResolver.Strength(fighters[i].CombatColor);
-                    if (s > maxStrength) maxStrength = s;
+                    ResolveActorVsPlayer(player, fighters);
                 }
+            }
+        }
 
-                for (int i = 0; i < fighters.Count; i++)
+        private static void ResolveActorVsActor(List<BaseActor> fighters)
+        {
+            if (fighters == null || fighters.Count <= 1) return;
+
+            int maxStrength = int.MinValue;
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                var a = fighters[i];
+                if (a == null || !a.IsAlive) continue;
+
+                int s = CombatResolver.Strength(a.CombatColor);
+                if (s > maxStrength) maxStrength = s;
+            }
+
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                var a = fighters[i];
+                if (a == null || !a.IsAlive) continue;
+
+                if (CombatResolver.Strength(a.CombatColor) < maxStrength)
+                    a.Kill();
+            }
+        }
+
+        private static void ResolveActorVsPlayer(PlayerActor player, List<BaseActor> fighters)
+        {
+            // 玩家防御强度：由面具决定（你可按“无面具=0”或“-1”调整）
+            int playerDefense = CombatResolver.Strength(player.CombatColor);
+
+            for (int i = 0; i < fighters.Count; i++)
+            {
+                var a = fighters[i];
+                if (a == null || !a.IsAlive) continue;
+
+                int atk = CombatResolver.Strength(a.CombatColor);
+
+                // 规则：低阶面具会被高阶 Actor 杀死；同阶/低阶杀不死玩家
+                if (atk > playerDefense)
                 {
-                    var a = fighters[i];
-                    if (CombatResolver.Strength(a.CombatColor) < maxStrength)
-                    {
-                        a.Kill();
-                    }
+                    player.Kill();
+                    return;
                 }
             }
         }

@@ -67,16 +67,16 @@ namespace GGJ2026
             {
                 if (!world.InBounds(cell) || world.IsBlocked(cell)) return true;
 
-                // reserved by someone else this turn
-                if (reservedTargets.TryGetValue(cell, out var r) && r != null && r.IsAlive)
-                    return true;
-
                 // occupied at turn start
                 if (occupancySnapshot.TryGetValue(cell, out var occ) && occ != null && occ.IsAlive)
                 {
                     // green is always blocking / cannot be entered
                     if (occ.CombatColor == FactionColor.Green || combatColor == FactionColor.Green)
-                        return true;
+{
+    // 只有不同控制色才阻挡
+    if (occ.ControlColor != color) return true;
+    // 同色继续走“可跟随推进”的逻辑
+}
 
                     // same control color: queue-follow rule
                     if (occ.ControlColor == color)
@@ -93,10 +93,13 @@ namespace GGJ2026
                         return true;
                     }
 
-                    // different color occupant blocks movement (combat happens after overlap in your design,
-                    // but you currently still treat occupied start cells as blocking unless same-color-follow allows it)
-                    return true;
+                    // different color: allow entering for overlap combat
+                    return false;
                 }
+
+                // reserved by someone else this turn (only matters for empty cells)
+                if (reservedTargets.TryGetValue(cell, out var r) && r != null && r.IsAlive)
+                    return true;
 
                 return false;
             }
