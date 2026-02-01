@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 77731c7bbdff08e4d92ac4fe5b4f6f78
+guid: a5d67b8c8576003469d14752e8f74749
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,7 +110,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IceMask_0
+      name: StoneMask_0
       rect:
         serializedVersion: 2
         x: 0
@@ -124,14 +124,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9659e88973a07dc49ada3b36fe34ee64
-      internalID: 929111768
+      spriteID: 4468f7c4c2599c3458b1dc8c7f865d7f
+      internalID: -1684576850
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IceMask_1
+      name: StoneMask_1
       rect:
         serializedVersion: 2
         x: 32
@@ -145,14 +145,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9550d1dbe23f2484ca2e933221d19310
-      internalID: 1785332149
+      spriteID: bc0b56f5c5e16da42a6bedde69157552
+      internalID: 1860161863
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IceMask_2
+      name: StoneMask_2
       rect:
         serializedVersion: 2
         x: 64
@@ -166,14 +166,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 489bce68632ab3a4ca866b9270d8c884
-      internalID: 1428870841
+      spriteID: 14b1754680f0e374e904d89456c1aee7
+      internalID: -1991473802
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IceMask_3
+      name: StoneMask_3
       rect:
         serializedVersion: 2
         x: 32
@@ -187,8 +187,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6853b8df192016845bf123a29e677186
-      internalID: -1285941177
+      spriteID: aedd69f5665e7cd4ebdd5a65bc11aecf
+      internalID: -269354167
       vertices: []
       indices: 
       edges: []
@@ -204,10 +204,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      IceMask_0: 929111768
-      IceMask_1: 1785332149
-      IceMask_2: 1428870841
-      IceMask_3: -1285941177
+      StoneMask_0: -1684576850
+      StoneMask_1: 1860161863
+      StoneMask_2: -1991473802
+      StoneMask_3: -269354167
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

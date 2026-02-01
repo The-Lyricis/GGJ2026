@@ -51,6 +51,8 @@ namespace GGJ2026
         public SpriteRenderer spriteRenderer;
         public List<Sprite> spriteList; //1 = up, 2= down, 3= left, 4= right
 
+        public MoveDir currentDir = MoveDir.Right;
+
         protected virtual void Awake()
         {
              var p = transform.position;
@@ -138,6 +140,7 @@ namespace GGJ2026
         }
         public virtual void SetSpriteDirection(MoveDir d)
         {
+            currentDir = d;
             if(spriteRenderer == null || spriteList == null || spriteList.Count < 4) return;
             if(MoveDir.Up == d)
             {
