@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace GGJ2026
 {
@@ -46,6 +47,9 @@ namespace GGJ2026
         /// Event when the actor is killed  
         /// </summary>
         public event Action<BaseActor> OnKilled;
+
+        public SpriteRenderer spriteRenderer;
+        public List<Sprite> spriteList; //1 = up, 2= down, 3= left, 4= right
 
         protected virtual void Awake()
         {
@@ -131,6 +135,30 @@ namespace GGJ2026
         {
             // 默认无动画
             return 0f;
+        }
+        public virtual void SetSpriteDirection(MoveDir d)
+        {
+            if(spriteRenderer == null || spriteList == null || spriteList.Count < 4) return;
+            if(MoveDir.Up == d)
+            {
+                spriteRenderer.sprite = spriteList[0];
+                transform.localScale = new Vector3(1,1,1);
+            } 
+            else if(MoveDir.Down == d)
+            {
+                spriteRenderer.sprite = spriteList[1];
+                transform.localScale = new Vector3(1,1,1);
+            }
+            else if(MoveDir.Left == d)
+            {
+                spriteRenderer.sprite = spriteList[2];
+                transform.localScale = new Vector3(-1,1,1);
+            }
+            else if(MoveDir.Right == d)
+            {
+                spriteRenderer.sprite = spriteList[3];
+                transform.localScale = new Vector3(1,1,1);
+            }
         }
     }
 }

@@ -14,12 +14,16 @@ namespace GGJ2026
                 if (a is PlayerActor)
                 {
                     ctx.SetIntent(a, playerIntent);
+                    a.GetComponent<BaseActor>().SetSpriteDirection(playerIntent.dir);
                     continue;
                 }
 
                 // 同控制色的 NPC 跟随玩家意图移动，否则无意图
                 if (a.ControlColor == ctx.playerControlColor)
+                {
                     ctx.SetIntent(a, playerIntent);
+                    a.GetComponent<BaseActor>().SetSpriteDirection(playerIntent.dir);
+                }
                 else
                     ctx.SetIntent(a, MoveIntent.None);
             }

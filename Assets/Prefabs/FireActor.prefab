@@ -51,6 +51,12 @@ MonoBehaviour:
   bodyColor: 2
   isAlive: 1
   mindComponent: {fileID: 6270387755788013619}
+  spriteRenderer: {fileID: 7657738329568816097}
+  spriteList:
+  - {fileID: 711778038, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
+  - {fileID: -2048812113, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
+  - {fileID: 1084986839, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
+  - {fileID: 1084986839, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
   controlColor: 2
   visual: {fileID: 230809967715769997}
   baseMoveTime: 0.2
