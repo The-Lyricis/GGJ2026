@@ -20,7 +20,6 @@
     right: 0;
     bottom: 0;
 
-    /* 旧版 UI Toolkit 常用背景缩放模式 */
     -unity-background-scale-mode: scale-and-crop;
 }
 
@@ -36,69 +35,124 @@
     align-items: center;
 }
 
-/* 上下弹簧：让 hero 落在屏幕中轴线附近 */
+/* 上下弹簧 */
 .spacer {
     flex-grow: 1;
 }
 
-/* 中轴线的图片容器（脚本注入 backgroundImage） */
-.hero {
+/* =========================
+   顶部图片（与标题分离）
+   ========================= */
+.topArt {
     width: 560px;
     height: 240px;
 
-    align-items: center;
-    justify-content: center;
+    margin-bottom: 12px;
 
     -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(0,0,0,0);
 }
 
-/* 图片正中央标题：放大约 3 倍（你可按需要再微调） */
+/* 标题：独立显示，不再压在图片上 */
 .title {
     -unity-font-style: bold;
-    font-size: 100px; /* 原 56 -> 168 */
+    font-size: 100px;
     color: rgb(255, 255, 255);
     unity-text-align: middle-center;
+
+    margin-bottom: 28px;
 }
 
-/* 按钮容器：纵向排列，位于 hero 下方 */
-.buttons {
+/* =========================
+   按钮区：按钮必须在中轴线居中
+   ========================= */
+
+/*
+  核心思路：
+  - buttonSection 是相对定位容器，宽度拉满
+  - buttonsAnchor 用 absolute + left:50% + translate(-btnW/2) 锚定到屏幕中心
+  - sideArt 同样 absolute，位置 = 按钮左边缘 - gap - 自身宽度
+*/
+.buttonSection {
+    position: relative;
+    width: 100%;
+
+    /* 给按钮区一些高度，避免元素互相挤压（按你的画面可微调） */
+    min-height: 260px;
+}
+
+/* 你可以把以下“常量”当作参数来改 */
+.buttonSection {
+    /* 按钮列固定宽度（关键：保证按钮“居中”可计算） */
+    --btnW: 420px;
+
+    /* 左侧图片宽度 */
+    --artW: 220px;
+
+    /* 图片与按钮间距 */
+    --gap: 36px;
+}
+
+/* 按钮列：纵向排列，且固定宽度 */
+.buttonsAnchor {
+    position: absolute;
+    left: 50%;
+    top: 0;
+
+    width: var(--btnW);
+
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    margin-top: 48px;
+    /* 锚定在中心线：-btnW/2 = -210px（对应 --btnW:420px） */
+    translate: -210px 0;
+}
+
+/* 左侧图片：放在按钮列左侧，但不影响按钮居中 */
+.sideArt {
+    position: absolute;
+    left: 50%;
+    top: 0;
+
+    width: var(--artW);
+    height: var(--artW);
+
+    -unity-background-scale-mode: scale-to-fit;
+    background-color: rgba(0,0,0,0);
+
+    /*
+      sideArt 的目标位置：
+      以中心线为参照，向左移动：btnW/2 + gap + artW
+      = 210 + 36 + 220 = 466px
+    */
+    translate: -466px 0;
 }
 
 /* 纯文字按钮：彻底去掉按钮图片/底色/边框，仅显示文字 */
 .textBtn {
-    /* 去掉按钮底（包括主题可能带的背景图 tint） */
     background-color: rgba(0, 0, 0, 0);
     background-image: none;
     -unity-background-image-tint-color: rgba(0, 0, 0, 0);
 
-    /* 去边框 */
     border-left-width: 0;
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
 
-    /* 去圆角（避免主题残留） */
     border-top-left-radius: 0;
     border-top-right-radius: 0;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 
-    /* 保留点击区域 */
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 6px;
     padding-bottom: 6px;
 
-    /* 两个按钮之间留间距 */
     margin-top: 12px;
     margin-bottom: 12px;
 
-    /* 按钮文字放大约 3 倍（原 30 -> 90） */
     font-size: 90px;
     color: rgb(255, 255, 255);
     unity-text-align: middle-center;

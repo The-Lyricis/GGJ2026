@@ -61,7 +61,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5dc54508ce2808498af0d1139bcff6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundSprite: {fileID: 0}
+  backgroundSprite: {fileID: 21300000, guid: 07b07ea92033c094082ff58d3a333239, type: 3}
   heroSprite: {fileID: -1630629567, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
   pixelFontResourcePath: Fonts/Pixel
   firstLevelIndex: 1
