@@ -49,10 +49,14 @@ MonoBehaviour:
   allActors:
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   player: {fileID: 0}
   autoCollectOnAwake: 1
+  blockShakeTarget: {fileID: 0}
+  blockShakeDuration: 0.08
+  blockShakeStrength: 0.08
+  blockShakeVibrato: 8
+  blockShakeRandomness: 90
+  blockShakeFadeOut: 1
 --- !u!114 &3249548101146018525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +78,7 @@ MonoBehaviour:
   killTiles: []
   buttonDefs: []
   exitTiles:
-  - {fileID: 11400000, guid: d243d06b04ac7194a884c309e738a448, type: 2}
+  - {fileID: 11400000, guid: 90e9abfa57ba14942ac9012c122facea, type: 2}
   maskTiles:
   - tile: {fileID: 11400000, guid: f84e0163dbfc6ac4bb38715724398c16, type: 2}
     color: 2
