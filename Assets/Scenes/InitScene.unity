@@ -289,20 +289,35 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 7585d54781ec20a40999107eae4d9ec8, type: 3}
   - {fileID: 8300000, guid: 4340016b155a2894d8206adff55b4d78, type: 3}
+  - {fileID: 8300000, guid: 7490a8e7629a85d4396216fd0ef15f16, type: 3}
+  - {fileID: 8300000, guid: 7e3c3d45d3185624a861862f758988b9, type: 3}
+  - {fileID: 8300000, guid: 0d0056a286cf08340aabfa8bafbeb163, type: 3}
   levelMusicConfigs:
   - sceneBuildIndex: 0
     musicClip: {fileID: 8300000, guid: 1442afb9a24d9e0408b310904d69081a, type: 3}
     loop: 1
     volume: 0.2
   - sceneBuildIndex: 1
-    musicClip: {fileID: 8300000, guid: 95c0bdfb788acd7429bbe258c3a9f388, type: 3}
+    musicClip: {fileID: 8300000, guid: 1442afb9a24d9e0408b310904d69081a, type: 3}
     loop: 1
     volume: 0.275
   - sceneBuildIndex: 2
-    musicClip: {fileID: 8300000, guid: bfb5dd13ae9e9c244abcd338b30d0eaa, type: 3}
+    musicClip: {fileID: 8300000, guid: 1442afb9a24d9e0408b310904d69081a, type: 3}
     loop: 1
     volume: 0.275
   - sceneBuildIndex: 3
+    musicClip: {fileID: 8300000, guid: 95c0bdfb788acd7429bbe258c3a9f388, type: 3}
+    loop: 1
+    volume: 0.275
+  - sceneBuildIndex: 4
+    musicClip: {fileID: 8300000, guid: 95c0bdfb788acd7429bbe258c3a9f388, type: 3}
+    loop: 1
+    volume: 0.275
+  - sceneBuildIndex: 5
+    musicClip: {fileID: 8300000, guid: bfb5dd13ae9e9c244abcd338b30d0eaa, type: 3}
+    loop: 1
+    volume: 0.275
+  - sceneBuildIndex: 5
     musicClip: {fileID: 8300000, guid: bfb5dd13ae9e9c244abcd338b30d0eaa, type: 3}
     loop: 1
     volume: 0.275
@@ -326,10 +341,6 @@ MonoBehaviour:
   mainMenuPrefab: {fileID: 5000174584224605340, guid: cd061dfb076e82d428ba5db097072e10, type: 3}
   resetHintPrefab: {fileID: 6530368177567218366, guid: 89fda0561c18ce2458a458afc2661c00, type: 3}
   screenFaderPrefab: {fileID: 7549673749775053937, guid: 95b3e61419fc1004fa2a24d4f5da517a, type: 3}
-  showEnterHintOnSceneLoad: 1
-  defaultEnterHintText: 22222222222222
-  excludedScenes:
-  - MainMenu
 --- !u!114 &959748720
 MonoBehaviour:
   m_ObjectHideFlags: 0
