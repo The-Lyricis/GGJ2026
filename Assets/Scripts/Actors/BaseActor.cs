@@ -9,7 +9,7 @@ namespace GGJ2026
     public abstract class BaseActor : MonoBehaviour
     {
         [Tooltip("The base color of the character (appearance / grouping / ability affiliation)")] [SerializeField]
-        private FactionColor bodyColor = FactionColor.White;
+        private FactionColor bodyColor;
 
         [Tooltip("Is Live")] [SerializeField] private bool isAlive = true;
 
