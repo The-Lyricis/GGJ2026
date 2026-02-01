@@ -10,8 +10,12 @@ namespace GGJ2026
         [SerializeField] private MainMenuView mainMenuPrefab;
         [SerializeField] private ResetHintView resetHintPrefab;
 
+        [Header("Transition Prefab View")]
+        [SerializeField] private ScreenFaderView screenFaderPrefab;
+
         private MainMenuView mainMenuInstance;
         private ResetHintView resetHintInstance;
+        private ScreenFaderView screenFaderInstance;
 
         private void Awake()
         {
@@ -48,6 +52,23 @@ namespace GGJ2026
             return resetHintInstance;
         }
 
+        private ScreenFaderView GetOrCreateScreenFader()
+        {
+            if (screenFaderInstance != null) return screenFaderInstance;
+            if (screenFaderPrefab == null)
+            {
+                Debug.LogError("[UIManager] screenFaderPrefab not assigned.");
+                return null;
+            }
+
+            screenFaderInstance = Instantiate(screenFaderPrefab, transform);
+
+            // 安全起见：确保一开始是透明并放行输入
+            screenFaderInstance.SetAlpha(0f, blockInput: false);
+
+            return screenFaderInstance;
+        }
+
         public void ShowMainMenu(bool show)
         {
             var view = GetOrCreateMainMenu();
@@ -64,6 +85,33 @@ namespace GGJ2026
         {
             var view = GetOrCreateResetHint();
             if (view != null) view.SetText(text);
+        }
+
+        // =========================
+        // Transition API
+        // =========================
+
+        public void FadeInBlack(float duration = 0.25f)
+        {
+            var view = GetOrCreateScreenFader();
+            if (view != null) view.FadeIn(duration);
+        }
+
+        public void FadeOutBlack(float duration = 0.25f)
+        {
+            var view = GetOrCreateScreenFader();
+            if (view != null) view.FadeOut(duration);
+        }
+
+        public void FadeTransition(System.Action middleAction, float fadeIn = 0.2f, float hold = 0.05f, float fadeOut = 0.2f)
+        {
+            var view = GetOrCreateScreenFader();
+            if (view != null) view.FadeTransition(middleAction, fadeIn, hold, fadeOut);
+            else middleAction?.Invoke();
+        }
+        public ScreenFaderView GetScreenFaderView()
+        {
+            return GetOrCreateScreenFader();
         }
     }
 }

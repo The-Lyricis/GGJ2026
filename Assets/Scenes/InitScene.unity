@@ -194,6 +194,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainMenuPrefab: {fileID: 5000174584224605340, guid: cd061dfb076e82d428ba5db097072e10, type: 3}
   resetHintPrefab: {fileID: 6530368177567218366, guid: 89fda0561c18ce2458a458afc2661c00, type: 3}
+  screenFaderPrefab: {fileID: 7549673749775053937, guid: 95b3e61419fc1004fa2a24d4f5da517a, type: 3}
 --- !u!114 &959748720
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,6 +207,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1352dcedc8bf8dc488cf0348507bee02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fadeIn: 0.6
+  holdBlack: 0.4
+  fadeOut: 0.6
 --- !u!114 &959748721
 MonoBehaviour:
   m_ObjectHideFlags: 0

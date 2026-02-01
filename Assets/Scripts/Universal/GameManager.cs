@@ -59,8 +59,10 @@ namespace GGJ2026
         private void ApplyStateUI(GameState state)
         {
             if (UIManager.Instance == null) return;
-
+            
+            if (state == GameState.MainMenu)
             UIManager.Instance.ShowMainMenu(state == GameState.MainMenu);
+
             UIManager.Instance.SetResetHintVisible(state == GameState.Playing);
         }
 
