@@ -3,22 +3,29 @@
     <ui:Style src="MainMenu.uss" />
 
     <ui:VisualElement name="root" class="root">
-        <!-- 全屏背景（脚本设置 sprite） -->
+        <!-- 全屏背景（脚本注入 backgroundImage / sprite） -->
         <ui:VisualElement name="bg" class="bg" />
 
-        <!-- 垂直布局：上弹簧 / 中间hero / 按钮 / 下弹簧 -->
+        <!-- 主布局：上弹簧 / 顶部图片区 / 标题 / 按钮区 / 下弹簧 -->
         <ui:VisualElement name="layout" class="layout">
             <ui:VisualElement class="spacer" />
 
-            <!-- 中轴线：图片 + 标题（都在 hero 内，保证居中） -->
-            <ui:VisualElement name="hero" class="hero">
-                <ui:Label name="title" class="title" text="Oops, All Me" />
-            </ui:VisualElement>
+            <!-- 顶部图片：与标题分离（脚本注入 backgroundImage） -->
+            <ui:VisualElement name="topArt" class="topArt" />
 
-            <!-- 按钮（纵向） -->
-            <ui:VisualElement name="buttons" class="buttons">
-                <ui:Button name="btnStart" class="textBtn" text="start" />
-                <ui:Button name="btnExit" class="textBtn" text="exit" />
+            <!-- 标题：独立于图片 -->
+            <ui:Label name="title" class="title" text="Oops, All Me" />
+
+            <!-- 按钮区：相对容器，内部用绝对定位确保按钮居中 -->
+            <ui:VisualElement name="buttonSection" class="buttonSection">
+                <!-- 左侧图片（脚本注入 backgroundImage） -->
+                <ui:VisualElement name="sideArt" class="sideArt" />
+
+                <!-- 按钮列：固定宽度并锚定在屏幕中轴线 -->
+                <ui:VisualElement name="buttonsAnchor" class="buttonsAnchor">
+                    <ui:Button name="btnStart" class="textBtn" text="start" />
+                    <ui:Button name="btnExit" class="textBtn" text="exit" />
+                </ui:VisualElement>
             </ui:VisualElement>
 
             <ui:VisualElement class="spacer" />
