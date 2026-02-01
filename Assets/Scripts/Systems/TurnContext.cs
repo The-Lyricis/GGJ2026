@@ -205,7 +205,8 @@ namespace GGJ2026
             if (!gw.TryGetButton(cell, out var def)) return;
             if (def == null || !def.IsAllowed(a)) return;
 
-            ButtonManager.SignalLatch(def.id, a, cell);
+            if (ButtonManager.SignalLatch(def.id, a, cell))
+                gw.SetButtonVisual(cell, true);
         }
 
         

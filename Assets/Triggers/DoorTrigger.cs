@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace GGJ2026
@@ -10,7 +10,9 @@ namespace GGJ2026
         [SerializeField] private DoorMarker marker;
 
         [Header("Visual")]
-        [SerializeField] private Renderer doorRenderer; // 可选：不填则自动从自身获取
+        [SerializeField] private SpriteRenderer doorRenderer; // optional: auto from self
+        [SerializeField] private Sprite closedSprite;
+        [SerializeField] private Sprite openSprite;
 
         [Header("Behavior")]
         [Tooltip("If true, door opens only once; later button events are ignored.")]
@@ -23,11 +25,9 @@ namespace GGJ2026
         {
             var p = transform.position;
 
-            // 防止 tileSize 为 0
             float sx = 1;
             float sy = 1;
 
-            // “向下取整到格子起点”再“+半格到中心”
             float cx = Mathf.Floor(p.x / sx) * sx + sx * 0.5f;
             float cy = Mathf.Floor(p.y / sy) * sy + sy * 0.5f;
 
@@ -35,7 +35,7 @@ namespace GGJ2026
 
             if (marker == null) marker = GetComponent<DoorMarker>();
             if (world == null) world = FindFirstObjectByType<GridWorldBehaviour>();
-            if (doorRenderer == null) doorRenderer = GetComponent<Renderer>();
+            if (doorRenderer == null) doorRenderer = GetComponent<SpriteRenderer>();
 
             if (marker == null || world == null || world.GroundTilemap == null)
             {
@@ -44,11 +44,9 @@ namespace GGJ2026
                 return;
             }
 
-            // 计算门所在格子
             var c = world.GroundTilemap.WorldToCell(transform.position);
             marker.cell = (Vector2Int)c;
 
-            // 初始状态
             isOpen = !marker.startClosed;
             if (marker.startClosed) Close();
             else Open();
@@ -70,13 +68,10 @@ namespace GGJ2026
             if (string.IsNullOrWhiteSpace(id)) return;
             if (isOpen && openOnce) return;
 
-            // 只关心门配置的 ids
             if (!marker.listenIds.Contains(id)) return;
 
-            // 记录已触发的按钮 id（Latch：只增不减）
             latchedIds.Add(id);
 
-            // AND：全部满足才开门
             if (AllRequiredLatched())
                 Open();
         }
@@ -87,9 +82,6 @@ namespace GGJ2026
             {
                 var req = marker.listenIds[i];
                 if (string.IsNullOrWhiteSpace(req)) continue;
-
-                // 如果你希望“门在场景加载时就尊重已经 latched 的按钮状态”
-                // 可以改为：if (!(latchedIds.Contains(req) || ButtonManager.IsLatched(req))) return false;
                 if (!latchedIds.Contains(req)) return false;
             }
             return true;
@@ -100,7 +92,6 @@ namespace GGJ2026
             if (world == null || marker == null) return;
             if (isOpen) return;
 
-            // Vector2Int 是值类型，不要判 null
             world.RemoveBlocks(marker.cell);
 
             isOpen = true;
@@ -120,9 +111,26 @@ namespace GGJ2026
 
         private void ApplyVisual(bool open)
         {
-            // 简单表现：开门隐藏渲染（你也可以换 Animator）
-            if (doorRenderer != null)
-                doorRenderer.enabled = !open;
+            if (doorRenderer == null) return;
+
+            if (open)
+            {
+                if (openSprite != null)
+                {
+                    doorRenderer.enabled = true;
+                    doorRenderer.sprite = openSprite;
+                }
+                else
+                {
+                    doorRenderer.enabled = false;
+                }
+            }
+            else
+            {
+                doorRenderer.enabled = true;
+                if (closedSprite != null)
+                    doorRenderer.sprite = closedSprite;
+            }
         }
     }
 }

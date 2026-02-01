@@ -14,6 +14,9 @@ namespace GGJ2026
         [Tooltip("Which TileBase on MarkerTilemap represents this button.")]
         public TileBase tile;
 
+        [Tooltip("Optional pressed-state TileBase for visual swap.")]
+        public TileBase pressedTile;
+
         [Tooltip("Logical id used by receivers (doors/platforms). Must be unique.")]
         public string id;
 

@@ -117,6 +117,8 @@ namespace GGJ2026
 
                     // tile -> def
                     buttonMap[def.tile] = def;
+                    if (def.pressedTile != null)
+                        buttonMap[def.pressedTile] = def;
 
                     // id sanity check
                     if (string.IsNullOrWhiteSpace(def.id))
@@ -234,6 +236,17 @@ namespace GGJ2026
             if (tile == null) return false;
 
             return buttonMap != null && buttonMap.TryGetValue(tile, out def);
+        }
+
+        public void SetButtonVisual(Vector2Int cell, bool pressed)
+        {
+            if (markerTilemap == null) return;
+            if (!TryGetButton(cell, out var def) || def == null) return;
+
+            var tile = pressed ? def.pressedTile : def.tile;
+            if (tile == null) return;
+
+            markerTilemap.SetTile((Vector3Int)cell, tile);
         }
 
         public bool IsButtonCell(Vector2Int cell) => TryGetButton(cell, out _);
