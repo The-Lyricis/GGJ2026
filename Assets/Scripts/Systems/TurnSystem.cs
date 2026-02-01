@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 namespace GGJ2026
 {
@@ -10,6 +11,15 @@ namespace GGJ2026
         [SerializeField] private PlayerActor player;
 
         [SerializeField] private bool autoCollectOnAwake = true;
+        [SerializeField] private Transform blockShakeTarget;
+        [SerializeField] private float blockShakeDuration = 0.08f;
+        [SerializeField] private float blockShakeStrength = 0.08f;
+        [SerializeField] private int blockShakeVibrato = 8;
+        [SerializeField] private float blockShakeRandomness = 90f;
+        [SerializeField] private bool blockShakeFadeOut = true;
+
+        private Tween blockShakeTween;
+        private Vector3 blockShakeOriginLocal;
 
         private void Reset()
         {
@@ -26,6 +36,12 @@ namespace GGJ2026
         {
             if (autoCollectOnAwake)
                 CollectSceneReferences();
+
+            if (blockShakeTarget == null && Camera.main != null)
+                blockShakeTarget = Camera.main.transform;
+
+            if (blockShakeTarget != null)
+                blockShakeOriginLocal = blockShakeTarget.localPosition;
         }
 
         private void OnEnable()
@@ -34,12 +50,21 @@ namespace GGJ2026
 
             if (player != null)
                 player.OnKilled += HandlePlayerKilled;
+
+            if (blockShakeTarget == null && Camera.main != null)
+                blockShakeTarget = Camera.main.transform;
+
+            if (blockShakeTarget != null)
+                blockShakeOriginLocal = blockShakeTarget.localPosition;
         }
 
         private void OnDisable()
         {
             if (player != null)
                 player.OnKilled -= HandlePlayerKilled;
+
+            if (blockShakeTween != null && blockShakeTween.IsActive())
+                blockShakeTween.Kill();
         }
 
         private void HandlePlayerKilled(BaseActor actor)
@@ -126,6 +151,7 @@ namespace GGJ2026
             // 3.2) if blocked, stop same-color NPCs and re-solve
             if (playerBlocked)
             {
+                TriggerBlockShake();
                 for (int i = 0; i < allActors.Count; i++)
                 {
                     var a = allActors[i];
@@ -139,9 +165,38 @@ namespace GGJ2026
                 ResolveMovement(ctx);
             }
 
+            for (int i = 0; i < allActors.Count; i++)
+            {
+                var a = allActors[i];
+                if (a == null || !a.IsAlive) continue;
+
+                var intent = ctx.GetIntent(a);
+                if (intent.dir == MoveDir.None) continue;
+
+                var from = world.GetActorCell(a);
+                if (!ctx.TryGetPlannedMove(a, out var to) || to == from)
+                {
+                    a.PlayBlockedAnimation();
+                }
+            }
+
+            bool playerMoved = false;
+            bool playerWasBlocked = false;
+            var playerIntentNow = ctx.GetIntent(player);
+            if (playerIntentNow.dir != MoveDir.None)
+            {
+                var playerFromCell = world.GetActorCell(player);
+                if (!ctx.TryGetPlannedMove(player, out var playerToCell) || playerToCell == playerFromCell)
+                    playerWasBlocked = true;
+                else
+                    playerMoved = true;
+            }
+
             // 4) apply moves
             float animTime = ctx.ApplyMoves(world);
             inputLockTimer = animTime*0.9f;
+            if (playerWasBlocked) AudioManager.Instance?.PlayBlockedSFX();
+            if (playerMoved) AudioManager.Instance?.PlayMoveSFX();
 
             // 5) triggers (Latch-only button triggers happen here)
             ctx.ResolveTriggers(world, allActors);
@@ -191,6 +246,24 @@ namespace GGJ2026
         private static int Projection(Vector2Int cell, Vector2Int delta)
         {
             return cell.x * delta.x + cell.y * delta.y;
+        }
+
+        private void TriggerBlockShake()
+        {
+            if (blockShakeTarget == null) return;
+
+            if (blockShakeTween != null && blockShakeTween.IsActive())
+                blockShakeTween.Kill();
+
+            blockShakeTarget.localPosition = blockShakeOriginLocal;
+            blockShakeTween = blockShakeTarget
+                .DOShakePosition(blockShakeDuration, blockShakeStrength, blockShakeVibrato, blockShakeRandomness, false, blockShakeFadeOut)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    if (blockShakeTarget != null)
+                        blockShakeTarget.localPosition = blockShakeOriginLocal;
+                });
         }
     }
 }
