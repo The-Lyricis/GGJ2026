@@ -181,7 +181,10 @@ namespace GGJ2026
                 if (a is PlayerActor player)
                 {
                     if (world.IsMaskCell(cell, out var color) && world.TryConsumeMask(cell, out color))
+                    {
                         player.EquipMask(color);
+                        AudioManager.Instance?.PlayMaskPickupSFX();
+                    }
                 }
 
                 // button (Latch-only): current cell only
@@ -189,7 +192,10 @@ namespace GGJ2026
 
                 // exit
                 if (a is PlayerActor && world.IsExitCell(cell))
+                {
+                    AudioManager.Instance?.PlayExitSFX();
                     LevelManager.Instance?.LoadNextLevel();
+                }
             }
         }
 

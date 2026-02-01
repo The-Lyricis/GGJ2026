@@ -26,6 +26,12 @@ namespace GGJ2026
     {
         public static AudioManager Instance { get; private set; }
 
+        public const string SfxMove = "Move";
+        public const string SfxBlocked = "Blocked";
+        public const string SfxDeath = "Death";
+        public const string SfxMaskPickup = "MaskPickup";
+        public const string SfxExit = "Exit";
+
         [Header("Audio Sources")]
         [SerializeField] private AudioSource musicSource;
         [SerializeField] private AudioSource sfxSource;
@@ -42,7 +48,14 @@ namespace GGJ2026
         [Range(0f, 1f)]
         [SerializeField] private float defaultMusicVolume = 1f;
 
+        [Header("Runtime Volumes")]
+        [Range(0f, 1f)]
+        [SerializeField] private float musicVolume = 1f;
+        [Range(0f, 1f)]
+        [SerializeField] private float sfxVolume = 1f;
+
         private readonly Dictionary<int, LevelMusicConfig> configByBuildIndex = new();
+        private float musicBaseVolume = 1f;
 
         private void Awake()
         {
@@ -57,6 +70,9 @@ namespace GGJ2026
             DontDestroyOnLoad(gameObject);
 
             BuildLookup();
+
+            if (sfxSource != null)
+                sfxSource.volume = Mathf.Clamp01(sfxVolume);
         }
 
         private void OnEnable()
@@ -120,7 +136,8 @@ namespace GGJ2026
             bool clipChanged = (musicSource.clip != targetClip);
 
             musicSource.loop = targetLoop;
-            musicSource.volume = targetVol;
+            musicBaseVolume = targetVol;
+            musicSource.volume = targetVol * musicVolume;
 
             if (clipChanged)
             {
@@ -148,10 +165,11 @@ namespace GGJ2026
             if (musicSource == null) return;
 
             volume = Mathf.Clamp01(volume);
+            musicBaseVolume = volume;
 
             bool sameClip = (musicSource.clip == clip);
             musicSource.loop = loop;
-            musicSource.volume = volume;
+            musicSource.volume = volume * musicVolume;
 
             if (!sameClip || restartIfSame)
             {
@@ -180,6 +198,12 @@ namespace GGJ2026
             if (s != null) sfxSource.PlayOneShot(s);
         }
 
+        public void PlayMoveSFX() => PlaySFX(SfxMove);
+        public void PlayBlockedSFX() => PlaySFX(SfxBlocked);
+        public void PlayDeathSFX() => PlaySFX(SfxDeath);
+        public void PlayMaskPickupSFX() => PlaySFX(SfxMaskPickup);
+        public void PlayExitSFX() => PlaySFX(SfxExit);
+
         public void ToggleMusic()
         {
             if (musicSource == null) return;
@@ -189,7 +213,33 @@ namespace GGJ2026
         public void SetMusicVolume(float volume01)
         {
             if (musicSource == null) return;
-            musicSource.volume = Mathf.Clamp01(volume01);
+            musicVolume = Mathf.Clamp01(volume01);
+            musicSource.volume = musicBaseVolume * musicVolume;
+        }
+
+        public void SetSFXVolume(float volume01)
+        {
+            if (sfxSource == null) return;
+            sfxVolume = Mathf.Clamp01(volume01);
+            sfxSource.volume = sfxVolume;
+        }
+
+        public float GetMusicVolume()
+        {
+            return musicVolume;
+        }
+
+        public float GetSFXVolume()
+        {
+            return sfxVolume;
+        }
+
+        private void OnValidate()
+        {
+            if (musicSource != null)
+                musicSource.volume = musicBaseVolume * Mathf.Clamp01(musicVolume);
+            if (sfxSource != null)
+                sfxSource.volume = Mathf.Clamp01(sfxVolume);
         }
     }
 }

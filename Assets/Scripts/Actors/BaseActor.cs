@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 namespace GGJ2026
 {
@@ -52,6 +53,16 @@ namespace GGJ2026
         public List<Sprite> spriteList; //1 = up, 2= down, 3= left, 4= right
 
         public MoveDir currentDir = MoveDir.Right;
+
+        [Header("Blocked Shake")]
+        [SerializeField] private Transform blockedShakeTarget;
+        [SerializeField] private float blockedShakeDuration = 0.08f;
+        [SerializeField] private float blockedShakeStrength = 0.06f;
+        [SerializeField] private int blockedShakeVibrato = 8;
+        [SerializeField] private float blockedShakeRandomness = 90f;
+        [SerializeField] private bool blockedShakeFadeOut = true;
+
+        private Tween blockedShakeTween;
 
         protected virtual void Awake()
         {
@@ -128,7 +139,9 @@ namespace GGJ2026
         
         public virtual void Kill()
         {
+            if (!isAlive) return;
             isAlive = false;
+            AudioManager.Instance?.PlayDeathSFX();
             OnKilled?.Invoke(this);
             gameObject.SetActive(false);
         }
@@ -138,6 +151,27 @@ namespace GGJ2026
             // 默认无动画
             return 0f;
         }
+        public virtual void PlayBlockedAnimation()
+        {
+            if (!isAlive) return;
+
+            var target = blockedShakeTarget != null ? blockedShakeTarget : transform;
+            if (target == null) return;
+
+            if (blockedShakeTween != null && blockedShakeTween.IsActive())
+                blockedShakeTween.Kill();
+
+            var origin = target.localPosition;
+            blockedShakeTween = target
+                .DOShakePosition(blockedShakeDuration, blockedShakeStrength, blockedShakeVibrato, blockedShakeRandomness, false, blockedShakeFadeOut)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    if (target != null)
+                        target.localPosition = origin;
+                });
+        }
+
         public virtual void SetSpriteDirection(MoveDir d)
         {
             currentDir = d;

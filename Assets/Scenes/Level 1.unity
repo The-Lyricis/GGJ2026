@@ -309,6 +309,10 @@ PrefabInstance:
       propertyPath: surfaceTilemap
       value: 
       objectReference: {fileID: 475154702}
+    - target: {fileID: 3249548101146018525, guid: 511c1b7a8d179b845a9bb185797351d2, type: 3}
+      propertyPath: exitTiles.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 90e9abfa57ba14942ac9012c122facea, type: 2}
     - target: {fileID: 6577823836307085086, guid: 511c1b7a8d179b845a9bb185797351d2, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.007843867
