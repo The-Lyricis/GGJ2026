@@ -126,6 +126,7 @@ MonoBehaviour:
   - {fileID: 1770244993, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
   - {fileID: -526313736, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
   - {fileID: -526313736, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
+  currentDir: 4
   controlColor: 5
   visual: {fileID: 6983564100123217850}
   baseMoveTime: 0.2
@@ -201,7 +202,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -443113463
   m_SortingLayer: 4
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 1770244993, guid: e8a0c9e7c0af9c14f8d2d86fb3e08303, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
