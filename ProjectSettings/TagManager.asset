@@ -53,10 +53,10 @@ TagManager:
   - name: Surface
     uniqueID: 3851853833
     locked: 0
-  - name: Actor
+  - name: Trigger
     uniqueID: 304468215
     locked: 0
-  - name: UI
+  - name: Actor
     uniqueID: 649322359
     locked: 0
   m_RenderingLayers:
