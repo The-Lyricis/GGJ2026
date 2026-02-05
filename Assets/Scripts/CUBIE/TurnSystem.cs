@@ -34,23 +34,19 @@ namespace CUBIE
             //     inputLockTimer -= Time.deltaTime;
             //     return;
             // }
-
-            var intent = ReadPlayerIntent();
-            if (intent.dir == MoveDir.None) return;
-
-            StepTurn(intent);
+            StepTurn();
         }
-
-        private MoveIntent ReadPlayerIntent()
+        public void StepTurn()
         {
-            if (player == null) return MoveIntent.None;
+            if (world == null || player == null || !player.IsAlive) return;
+
             var input = player.GetComponent<IInputSource>();
-            return input == null ? MoveIntent.None : input.ReadMoveIntent();
-        }
+            if(input == null)
+            {
+                return;
+            } 
 
-        public void StepTurn(MoveIntent playerIntent)
-        {
-            if (world == null || player == null) return;
+            MoveIntent playerIntent = input.ReadMoveIntent();
 
             var ctx = new TurnContext();
             ctx.BuildSnapshot(allActors, world);
@@ -128,7 +124,10 @@ namespace CUBIE
         {
             if (player == null || ctx == null) return false;
             if (playerIntent.dir == MoveDir.None) return false;
-            return ctx.IsBlocked(player);
+            if (ctx.IsBlocked(player)) return true;
+            if (ctx.TryGetPlannedMove(player, out var planned))
+                return planned == world.GetActorCell(player);
+            return false;
         }
 
 
@@ -174,7 +173,7 @@ namespace CUBIE
                 for (int j = 0; j < monoBehaviours.Length; j++)
                 {
                     if (monoBehaviours[j] is IActorEffect effect)
-                        effect.OnResolve(actor, ctx);
+                        effect.OnResolve(actor, ctx, world);
                 }
             }
         }
