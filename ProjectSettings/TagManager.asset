@@ -2,7 +2,7 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!78 &1
 TagManager:
-  serializedVersion: 2
+  serializedVersion: 3
   tags: []
   layers:
   - Default
@@ -50,12 +50,14 @@ TagManager:
   - name: Walls
     uniqueID: 1481464605
     locked: 0
-  - name: Actors
+  - name: Surface
     uniqueID: 3851853833
     locked: 0
-  - name: FX
+  - name: Trigger
     uniqueID: 304468215
     locked: 0
-  - name: UI
+  - name: Actor
     uniqueID: 649322359
     locked: 0
+  m_RenderingLayers:
+  - Default
