@@ -67,7 +67,6 @@ namespace GGJ2026
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
 
             BuildLookup();
 

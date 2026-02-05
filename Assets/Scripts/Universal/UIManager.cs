@@ -1,117 +1,97 @@
+using System;
 using UnityEngine;
+using UnityEngine.UIElements;
+using System.Collections.Generic;
 
-namespace GGJ2026
+public enum UILayer
 {
-    public class UIManager : MonoBehaviour
-    {
-        public static UIManager Instance { get; private set; }
+    Panel,
+    Popup,
+    Overlay
+}
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
 
-        [Header("UI Prefabs")]
-        [SerializeField] private MainMenuView mainMenuPrefab;
-        [SerializeField] private ResetHintView resetHintPrefab;
+    [Header("UI 配置")] [SerializeField] private UIDocument mainDocument;
+    
+    private Dictionary<string, VisualElement> _panelCache = new Dictionary<string, VisualElement>();
+    
+    private VisualElement _root;
+    private VisualElement _panelLayer;
+    private VisualElement _popupLayer;
+    private VisualElement _overlayLayer;
 
-        [Header("Transition Prefab View")]
-        [SerializeField] private ScreenFaderView screenFaderPrefab;
-
-        private MainMenuView mainMenuInstance;
-        private ResetHintView resetHintInstance;
-        private ScreenFaderView screenFaderInstance;
-
-        private void Awake()
+    private void Awake()
+    { 
+        if (Instance == null)
         {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            _root = mainDocument.rootVisualElement;
+            _root.style.position = Position.Absolute;
+            _root.style.left = 0;
+            _root.style.right = 0;
+            _root.style.top = 0;
+            _root.style.bottom = 0;
+            _root.style.flexGrow = 1;
+            
+            _panelLayer = _root.Q<VisualElement>("PanelLayer");
+            _popupLayer = _root.Q<VisualElement>("PopupLayer");
+            _overlayLayer = _root.Q<VisualElement>("OverlayLayer");
+
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public VisualElement OpenPanel(string assetPath, UILayer layer)
+    {
+        if (!_panelCache.TryGetValue(assetPath, out var panel))
+        {
+            var visualAsset = Resources.Load<VisualTreeAsset>(assetPath);//VisualTreeAsset是.uxml在内存中的对象格式
+            if(visualAsset == null) return null;
+
+            panel = visualAsset.Instantiate();
+            panel.style.position = Position.Absolute;
+            panel.style.left = 0;
+            panel.style.right = 0;
+            panel.style.top = 0;
+            panel.style.bottom = 0;
+            panel.style.flexGrow = 1;
+            _panelCache.Add(assetPath, panel);
         }
 
-        private MainMenuView GetOrCreateMainMenu()
-        {
-            if (mainMenuInstance != null) return mainMenuInstance;
-            if (mainMenuPrefab == null)
-            {
-                Debug.LogError("[UIManager] mainMenuPrefab not assigned.");
-                return null;
-            }
-            mainMenuInstance = Instantiate(mainMenuPrefab, transform);
-            return mainMenuInstance;
+        VisualElement ElementRoot = _panelLayer;
+        switch (layer)
+        {   
+            case UILayer.Popup:
+                ElementRoot = _popupLayer;
+                break;
+            case UILayer.Panel:
+                ElementRoot = _panelLayer;
+                break;
+            case UILayer.Overlay:
+                ElementRoot = _overlayLayer;
+                break;
         }
-
-        private ResetHintView GetOrCreateResetHint()
+        if (!ElementRoot.Contains(panel))
         {
-            if (resetHintInstance != null) return resetHintInstance;
-            if (resetHintPrefab == null)
-            {
-                Debug.LogError("[UIManager] resetHintPrefab not assigned.");
-                return null;
-            }
-            resetHintInstance = Instantiate(resetHintPrefab, transform);
-            return resetHintInstance;
+            ElementRoot.Add(panel);
         }
+        
+        panel.style.display = DisplayStyle.Flex;
+        return panel;
+        
+    }
 
-        private ScreenFaderView GetOrCreateScreenFader()
+    public void ClosePanel(string assetPath)
+    {
+        if (_panelCache.TryGetValue(assetPath, out var panel))
         {
-            if (screenFaderInstance != null) return screenFaderInstance;
-            if (screenFaderPrefab == null)
-            {
-                Debug.LogError("[UIManager] screenFaderPrefab not assigned.");
-                return null;
-            }
-
-            screenFaderInstance = Instantiate(screenFaderPrefab, transform);
-
-            // 安全起见：确保一开始是透明并放行输入
-            screenFaderInstance.SetAlpha(0f, blockInput: false);
-
-            return screenFaderInstance;
-        }
-
-        public void ShowMainMenu(bool show)
-        {
-            var view = GetOrCreateMainMenu();
-            if (view != null) view.SetVisible(show);
-        }
-
-        public void SetResetHintVisible(bool visible)
-        {
-            var view = GetOrCreateResetHint();
-            if (view != null) view.SetVisible(visible);
-        }
-
-        public void SetResetHintText(string text)
-        {
-            var view = GetOrCreateResetHint();
-            if (view != null) view.SetText(text);
-        }
-
-        // =========================
-        // Transition API
-        // =========================
-
-        public void FadeInBlack(float duration = 0.25f)
-        {
-            var view = GetOrCreateScreenFader();
-            if (view != null) view.FadeIn(duration);
-        }
-
-        public void FadeOutBlack(float duration = 0.25f)
-        {
-            var view = GetOrCreateScreenFader();
-            if (view != null) view.FadeOut(duration);
-        }
-
-        public void FadeTransition(System.Action middleAction, float fadeIn = 0.2f, float hold = 0.05f, float fadeOut = 0.2f)
-        {
-            var view = GetOrCreateScreenFader();
-            if (view != null) view.FadeTransition(middleAction, fadeIn, hold, fadeOut);
-            else middleAction?.Invoke();
-        }
-        public ScreenFaderView GetScreenFaderView()
-        {
-            return GetOrCreateScreenFader();
+            panel.style.display = DisplayStyle.None;
         }
     }
 }
+

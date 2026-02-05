@@ -30,16 +30,16 @@ namespace GGJ2026
 
             // 统一初始化入口（如有需要）
             // 例如：音量读取存档、UI预热、事件总线绑定等
-            InitializeManagers();
+            Initialize();
         }
 
-        private void InitializeManagers()
+        private void Initialize()
         {
             // 这里可以保证初始化顺序：
             // Audio -> UI -> Game 或者你需要的任何顺序
             // if (audioManager != null) audioManager.Initialize();
             //if (uiManager != null) uiManager.Initialize();
-            // if (gameManager != null) gameManager.Initialize();
+            //if (gameManager != null) gameManager.Initialize();
         }
     }
 }

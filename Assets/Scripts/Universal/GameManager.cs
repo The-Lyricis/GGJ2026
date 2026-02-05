@@ -13,6 +13,9 @@ namespace GGJ2026
 
         [SerializeField] private KeyCode resetKey = KeyCode.R;
         [SerializeField] private KeyCode skipKey = KeyCode.P;
+        
+        [SerializeField] private MainMenuPanel mainMenuPanel;
+        [SerializeField] private ResetHintPanel resetHintPanel;
 
         private void Awake()
         {
@@ -23,7 +26,6 @@ namespace GGJ2026
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
@@ -58,12 +60,16 @@ namespace GGJ2026
         /// </summary>
         private void ApplyStateUI(GameState state)
         {
-            if (UIManager.Instance == null) return;
-            
             if (state == GameState.MainMenu)
-            UIManager.Instance.ShowMainMenu(state == GameState.MainMenu);
-
-            UIManager.Instance.SetResetHintVisible(state == GameState.Playing);
+            {
+                resetHintPanel.Hide();
+                mainMenuPanel.Show();
+            }
+            else if (state == GameState.Playing)
+            {
+                mainMenuPanel.Hide();
+                resetHintPanel.Show();
+            }
         }
 
         public void ReloadCurrentLevel()

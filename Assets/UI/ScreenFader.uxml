@@ -1,4 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-<ui:Style src="ScreenFader.uss" />
-    <ui:VisualElement name="FaderRoot" class="fader-root" />
-</ui:UXML>
