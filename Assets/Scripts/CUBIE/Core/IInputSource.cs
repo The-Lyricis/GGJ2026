@@ -2,6 +2,7 @@ namespace CUBIE
 {
     public interface IInputSource
     {
-        MoveIntent ReadMoveIntent();
+        MoveDir ReadDownDir();
+        MoveDir ReadHoldDir();
     }
 }

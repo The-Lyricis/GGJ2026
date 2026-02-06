@@ -6,6 +6,8 @@ namespace CUBIE
     public abstract class BaseActor : MonoBehaviour
     {
         private bool isAlive = true;
+        private bool isSliding = false;
+        private MoveDir slideDir = MoveDir.None;
 
         private  ActorType actorType;
         
@@ -17,6 +19,22 @@ namespace CUBIE
         }
 
         public event Action<BaseActor> OnKilled;
+
+        public bool IsSliding => isSliding;
+        public MoveDir SlideDir => slideDir;
+
+        public void StartSlide(MoveDir dir)
+        {
+            if (dir == MoveDir.None) return;
+            isSliding = true;
+            slideDir = dir;
+        }
+
+        public void StopSlide()
+        {
+            isSliding = false;
+            slideDir = MoveDir.None;
+        }
 
 
         // Start is called before the first frame update
@@ -36,6 +54,7 @@ namespace CUBIE
             if (!isAlive) return;
 
             isAlive = false;
+            StopSlide();
             OnKilled?.Invoke(this);
             gameObject.SetActive(false);
         }

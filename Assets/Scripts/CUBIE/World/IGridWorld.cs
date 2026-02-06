@@ -32,7 +32,7 @@ namespace CUBIE
         void UnregisterActor(BaseActor actor);
 
         Vector2Int GetActorCell(BaseActor actor);
-        float MoveActor(BaseActor actor, Vector2Int toCell);
+        float MoveActor(BaseActor actor, Vector2Int toCell, float duration);
     }
 
 }

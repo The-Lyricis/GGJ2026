@@ -30,12 +30,15 @@ namespace CUBIE
         [SerializeField] private List<BlockTileDef> blockTiles = new();
         [SerializeField] private List<SurfaceTileDef> surfaceTiles = new();
 
+
         private Dictionary<TileBase, BlockType> blockMap;
 
         private Dictionary<TileBase, SurfaceType> surfaceMap;
 
         private readonly Dictionary<BaseActor, Vector2Int> actorToCell = new();
         private readonly Dictionary<Vector2Int, BaseActor> cellToActor = new();
+
+        private readonly Dictionary<Vector2Int, BlockType> dynamicBlocks = new();
         
         //
         
@@ -101,6 +104,7 @@ namespace CUBIE
 
         public BlockType GetBlock(Vector2Int cell)
         {
+            if (dynamicBlocks.TryGetValue(cell, out var d)) return d;
             if (blockTilemap == null) return BlockType.None;
             var tile = blockTilemap.GetTile((Vector3Int)cell);
             if (tile == null || blockMap == null) return BlockType.None;
@@ -117,15 +121,12 @@ namespace CUBIE
 
         public void SetBlock(Vector2Int cell, BlockType type)
         {
-            if (blockTilemap == null) return;
             if (type == BlockType.None)
-            {
-                blockTilemap.SetTile((Vector3Int)cell, null);
-                return;
-            }
+                dynamicBlocks.Remove(cell);
+            else
+                dynamicBlocks[cell] = type;
 
-            var tile = FindTile(blockTiles, type);
-            blockTilemap.SetTile((Vector3Int)cell, tile);
+            return;
         }
 
         public void SetSurface(Vector2Int cell, SurfaceType type)
@@ -153,7 +154,7 @@ namespace CUBIE
             return cellFromPos;
         }
 
-        private void SetActorCell(BaseActor actor, Vector2Int toCell)
+        private void SetActorCell(BaseActor actor, Vector2Int toCell, bool updateTransform)
         {
             if (actor == null) return;
 
@@ -165,14 +166,15 @@ namespace CUBIE
 
             actorToCell[actor] = toCell;
             cellToActor[toCell] = actor;
-            actor.transform.position =  GridUtil.CellToWorldCenter(toCell);
+            if (updateTransform)
+                actor.transform.position = GridUtil.CellToWorldCenter(toCell);
         }
 
         private void HandleActorKilled(BaseActor actor) => UnregisterActor(actor);
         public void RegisterActor(BaseActor actor, Vector2Int cell)
         {
             if (actor == null) return;
-            SetActorCell(actor, cell);
+            SetActorCell(actor, cell, true);
             actor.OnKilled += HandleActorKilled;
         }
         
@@ -188,7 +190,7 @@ namespace CUBIE
             actor.OnKilled -= HandleActorKilled;
         }
 
-        public float MoveActor(BaseActor actor, Vector2Int toCell)
+        public float MoveActor(BaseActor actor, Vector2Int toCell, float duration)
         {
             if (actor == null || !actor.IsAlive) return 0f;
             if (!InBounds(toCell)) return 0f;
@@ -197,8 +199,21 @@ namespace CUBIE
             if (cellToActor.TryGetValue(toCell, out var occ) && occ != null && occ != actor)
                 return 0f;
 
-            SetActorCell(actor, toCell);
-            return 0f;
+            var fromCell = actorToCell.TryGetValue(actor, out var f) ? f : GridUtil.WorldToCell(actor.transform.position);
+            SetActorCell(actor, toCell, false);
+
+            var mover = actor.GetComponent<ActorMover>();
+            if (mover != null)
+            {
+                var dir = new Vector2Int(
+                    Mathf.Clamp(toCell.x - fromCell.x, -1, 1),
+                    Mathf.Clamp(toCell.y - fromCell.y, -1, 1)
+                );
+                return mover.MoveTo(GridUtil.CellToWorldCenter(toCell), dir, duration * 0.65f);
+            }
+
+            actor.transform.position = GridUtil.CellToWorldCenter(toCell);
+            return duration;
         }
 
         private static TileBase FindTile(List<BlockTileDef> defs, BlockType type)

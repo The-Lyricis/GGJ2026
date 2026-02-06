@@ -77,7 +77,7 @@ namespace CUBIE
         }
         
 
-        public float ApplyMoves(IGridWorld world)
+        public float ApplyMoves(IGridWorld world, float stepDuration)
         {
             float max = 0f;
             if (world == null) return max;
@@ -85,7 +85,7 @@ namespace CUBIE
             foreach (var kv in plannedCellByActor)
             {
                 if (kv.Key == null || !kv.Key.IsAlive) continue;
-                float t = world.MoveActor(kv.Key, kv.Value);
+                float t = world.MoveActor(kv.Key, kv.Value, stepDuration);
                 if (t > max) max = t;
             }
 
@@ -93,5 +93,6 @@ namespace CUBIE
             reservedCellToActor.Clear();
             return max;
         }
+
     }
 }

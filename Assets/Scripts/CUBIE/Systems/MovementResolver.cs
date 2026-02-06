@@ -58,9 +58,11 @@ namespace CUBIE
         public Vector2Int ResolveActor(BaseActor actor, MoveIntent intent, TurnContext ctx, IGridWorld world)
         {
             if (actor == null || world == null) return Vector2Int.zero;
-            if (intent.dir == MoveDir.None) return GetStartCell(actor, world);
+            bool isSliding = actor.IsSliding;
+            var dir = isSliding ? actor.SlideDir : intent.dir;
+            if (dir == MoveDir.None) return GetStartCell(actor, world);
 
-            var delta = MoveUtil.DirToDelta(intent.dir);
+            var delta = MoveUtil.DirToDelta(dir);
             if (delta == Vector2Int.zero) return GetStartCell(actor, world);
 
             var current = GetStartCell(actor, world);
@@ -68,6 +70,23 @@ namespace CUBIE
 
             bool fromIce = IsIce(world, current);
             bool nextIce = IsIce(world, target);
+
+            // Sliding actor: ignore input, keep sliding until blocked or off ice
+            if (isSliding)
+            {
+                if (IsBlocked(target, actor, world))
+                {
+                    actor.StopSlide();
+                    return current;
+                }
+
+                if (nextIce)
+                    actor.StartSlide(dir);
+                else
+                    actor.StopSlide();
+
+                return target;
+            }
 
             // Normal ground movement
             if (!fromIce && !nextIce)
@@ -77,16 +96,15 @@ namespace CUBIE
             if (!fromIce && nextIce && IsBlocked(target, actor, world))
                 return current;
 
-            // Ice sliding
-            var cursor = current;
-            while (true)
+            // Entering ice: move one cell and start sliding
+            if (nextIce && !IsBlocked(target, actor, world))
             {
-                var probe = cursor + delta;
-                if (IsBlocked(probe, actor, world)) return cursor;
-
-                cursor = probe;
-                if (!IsIce(world, cursor)) return cursor;
+                actor.StartSlide(dir);
+                return target;
             }
+
+            // Leaving ice (not sliding): just move one cell if not blocked
+            return IsBlocked(target, actor, world) ? current : target;
         }
 
         private void ResolveByDirection(MoveDir dir, TurnContext ctx, IGridWorld world, IReadOnlyList<BaseActor> actors)
