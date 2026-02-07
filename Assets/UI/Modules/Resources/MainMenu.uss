@@ -1,0 +1,120 @@
+:root {
+    --text: rgb(240, 240, 240);
+
+    --frame-dark: rgba(0, 0, 0, 0.65);
+
+    --c-start:    rgb(72, 92, 150);
+    --c-continue: rgb(82, 150, 92);
+    --c-settings: rgb(62, 56, 60);
+    --c-quit:     rgb(126, 70, 70);
+
+    --c-start-h:    rgb(86, 106, 164);
+    --c-continue-h: rgb(96, 164, 106);
+    --c-settings-h: rgb(76, 70, 74);
+    --c-quit-h:     rgb(140, 84, 84);
+
+    --btn-w: 520px;
+    --btn-h: 84px;
+}
+
+.screen {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+}
+
+.bg {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+
+    /* 你也可以在 C# 里动态设置 backgroundImage，避免 URL 写死 */
+    background-image: url("project://database/Assets/Arts/Final/titleimage.png?fileID=2800000&guid=07b07ea92033c094082ff58d3a333239&type=3#titleimage");
+    background-size: cover;
+    background-position: center;
+}
+
+.vignette {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.20);
+}
+
+.content {
+    position: absolute;
+    left: 0; top: 0; right: 0; bottom: 0;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding-top: 60px;
+}
+
+.logo-wrap {
+    width: 1200px;
+    height: 360px;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 36px;
+}
+
+.logo {
+    width: 1100px;
+    height: 320px;
+
+    /* 如果你暂时没有 logo.png，就先注释掉 */
+    /* background-image: url("project://database/Assets/Arts/Final/logo.png?fileID=2800000&guid=REPLACE&type=3#logo"); */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.menu-wrap {
+    width: var(--btn-w);
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.btn {
+    width: var(--btn-w);
+    height: var(--btn-h);
+    margin-top: 14px;
+
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-color: var(--frame-dark);
+    border-right-color: var(--frame-dark);
+    border-top-color: var(--frame-dark);
+    border-bottom-color: var(--frame-dark);
+
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.btn-text {
+    color: var(--text);
+    font-size: 32px;
+    -unity-text-align: middle-left;
+    text-shadow: 3px 3px rgba(0, 0, 0, 0.65);
+    margin-left: 22px;
+}
+
+.btn-start    { background-color: var(--c-start); }
+.btn-continue { background-color: var(--c-continue); }
+.btn-settings { background-color: var(--c-settings); }
+.btn-quit     { background-color: var(--c-quit); }
+
+.btn-start:hover    { background-color: var(--c-start-h); }
+.btn-continue:hover { background-color: var(--c-continue-h); }
+.btn-settings:hover { background-color: var(--c-settings-h); }
+.btn-quit:hover     { background-color: var(--c-quit-h); }
+
+.btn:active { translate: 0 2px; }

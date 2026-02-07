@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Components/Resources/PauseButton.uss?fileID=7433441132597879392&amp;guid=3c2dc408aa55b4142b90d445a405f931&amp;type=3#PauseButton" />
+    <ui:VisualElement name="PauseBtnRoot" class="pause-root">
+        <ui:VisualElement name="PauseShadow" class="pause-shadow" style="top: 5px; left: 5px; border-top-width: 2px; border-left-width: 2px; border-right-width: 2px; border-bottom-width: 2px;" />
+        <ui:VisualElement name="PauseBtnOuter" class="pause-outer" style="border-top-width: 3px; border-left-width: 3px; border-bottom-width: 3px; border-right-width: 3px; padding-top: 2px; padding-right: 2px; padding-left: 2px; padding-bottom: 2px;">
+            <ui:VisualElement class="pause-inner" style="background-size: 145% 100%; align-items: center; justify-content: center; padding-top: 2px; padding-left: 2px; padding-right: 2px; padding-bottom: 2px; border-top-width: 2px; border-left-width: 2px; border-right-width: 2px; border-bottom-width: 2px;">
+                <ui:Button name="PauseButton" focusable="true" class="pause-btn" style="justify-content: flex-start; margin-left: 2px; margin-right: 2px; border-top-width: 2px; border-left-width: 2px; border-right-width: 2px; border-bottom-width: 2px;">
+                    <ui:VisualElement class="pause-icon-wrap" style="top: 0; justify-content: center; align-self: auto; align-content: auto;">
+                        <ui:Label name="PauseIcon" text="||" class="pause-icon" style="-unity-font-definition: resource(&apos;Fonts/Blue Winter&apos;); align-self: center; align-content: auto; -unity-text-align: middle-center; font-size: 54px; padding-right: -2px; margin-right: 2px; padding-top: 5px; letter-spacing: 5px; padding-bottom: 14px; padding-left: 4px; -unity-font-style: bold;" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -10,7 +10,7 @@ public class testUI : MonoBehaviour
     {
         
         var root = mainDocument.rootVisualElement;
-        var visualAsset = Resources.Load<VisualTreeAsset>("MainMenu");
+        var visualAsset = Resources.Load<VisualTreeAsset>("PauseButton");
         var panel = visualAsset.Instantiate();
         
         panel.style.position = Position.Absolute;

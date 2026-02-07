@@ -16,7 +16,9 @@ namespace GGJ2026
         
         [SerializeField] private MainMenuPanel mainMenuPanel;
         [SerializeField] private ResetHintPanel resetHintPanel;
-
+        [SerializeField] private PauseButtonPanel pauseButtonPanel;
+        [SerializeField] private PausePanel pausePanel;
+        
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -64,11 +66,22 @@ namespace GGJ2026
             {
                 resetHintPanel.Hide();
                 mainMenuPanel.Show();
+                pauseButtonPanel.Hide();
+                pausePanel.Hide();
             }
             else if (state == GameState.Playing)
             {
                 mainMenuPanel.Hide();
                 resetHintPanel.Show();
+                pauseButtonPanel.Show();
+                pausePanel.Hide();
+            }
+            else if (state == GameState.Paused)
+            {
+                pausePanel.Show();
+                resetHintPanel.Hide();
+                mainMenuPanel.Hide();
+                pauseButtonPanel.Hide();
             }
         }
 

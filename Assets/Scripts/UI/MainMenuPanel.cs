@@ -15,7 +15,7 @@ public class MainMenuPanel : BasePanel
         
         _startBtn.clicked += ()=>
         {
-            LevelManager.Instance.LoadNextLevel();
+            LevelManager.Instance.LoadLevel(1);
             GameManager.Instance.SetState(GameState.Playing);
         };
         _quitBtn.clicked += ()=>Application.Quit();

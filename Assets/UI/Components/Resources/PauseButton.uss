@@ -1,0 +1,151 @@
+:root {
+    --outer-bg: rgb(34, 28, 28);
+    --inner-bg: rgb(60, 50, 50);
+    --btn-bg:   rgb(52, 44, 44);
+
+    --stroke-outer: rgba(0, 0, 0, 0.85);
+    --stroke-inner: rgba(255, 255, 255, 0.08);
+    --stroke-mid:   rgba(0, 0, 0, 0.45);
+
+    --icon: rgb(232, 232, 232);
+
+    /* “硬阴影块”颜色（更暗、更实） */
+    --shadow-bg: rgba(0, 0, 0, 0.55);
+}
+
+/* 根容器：负责屏幕定位 + 作为 shadow 参照 */
+.pause-root {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+
+    width: 128px;
+    height: 128px;
+
+    /* 避免被父布局拉伸 */
+    flex-shrink: 0;
+}
+
+/* 右下偏移阴影块（实体方块，不模糊） */
+.pause-shadow {
+    position: absolute;
+
+    /* 这两个值决定“阴影偏移距离”，按你右图观感建议 10~14 */
+    left: 12px;
+    top: 12px;
+
+    width: 128px;
+    height: 128px;
+
+    background-color: var(--shadow-bg);
+
+    /* 阴影块也有一点边框厚度（像像素块的硬边） */
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+    border-left-color: rgba(0, 0, 0, 0.55);
+    border-right-color: rgba(0, 0, 0, 0.55);
+    border-top-color: rgba(0, 0, 0, 0.55);
+    border-bottom-color: rgba(0, 0, 0, 0.55);
+}
+
+/* 外框 */
+.pause-outer {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+
+    width: 128px;
+    height: 128px;
+
+    background-color: var(--outer-bg);
+
+    border-left-width: 8px;
+    border-right-width: 8px;
+    border-top-width: 8px;
+    border-bottom-width: 8px;
+
+    border-left-color: var(--stroke-outer);
+    border-right-color: var(--stroke-outer);
+    border-top-color: var(--stroke-outer);
+    border-bottom-color: var(--stroke-outer);
+
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/* 内框 */
+.pause-inner {
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--inner-bg);
+
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+
+    border-left-color: var(--stroke-inner);
+    border-right-color: var(--stroke-inner);
+    border-top-color: var(--stroke-inner);
+    border-bottom-color: var(--stroke-inner);
+
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+/* 按钮本体 */
+.pause-btn {
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--btn-bg);
+
+    border-left-width: 4px;
+    border-right-width: 4px;
+    border-top-width: 4px;
+    border-bottom-width: 4px;
+
+    border-left-color: var(--stroke-mid);
+    border-right-color: var(--stroke-mid);
+    border-top-color: var(--stroke-mid);
+    border-bottom-color: var(--stroke-mid);
+
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    position: relative;
+}
+
+/* 图标绝对居中 */
+.pause-icon-wrap {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.pause-icon {
+    color: var(--icon);
+    font-size: 56px;
+    letter-spacing: 12px;
+    -unity-text-align: middle-center;
+    text-shadow: 4px 4px rgba(0, 0, 0, 0.60);
+}
+
+/* hover/active 用换色即可 */
+.pause-btn:hover {
+    background-color: rgb(60, 52, 52);
+}
+
+.pause-btn:active {
+    background-color: rgb(46, 40, 40);
+}

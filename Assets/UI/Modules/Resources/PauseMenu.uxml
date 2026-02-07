@@ -1,0 +1,66 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Modules/Resources/PauseMenu.uss?fileID=7433441132597879392&amp;guid=b9f5dd4eadf77ab4496d045ce4b73f44&amp;type=3#PauseMenu" />
+    <ui:VisualElement name="Overlay" class="overlay">
+        <ui:VisualElement name="ModalOuter" class="modal-outer">
+            <ui:VisualElement name="ModalInner" class="modal-inner">
+                <ui:VisualElement name="ModalContent" class="modal-content">
+                    <ui:VisualElement class="title-area">
+                        <ui:Label name="Title" text="PAUSED" class="title" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                        <ui:VisualElement class="title-divider-wrap">
+                            <ui:VisualElement class="title-divider" />
+                            <ui:VisualElement class="title-divider title-divider--mini" />
+                            <ui:VisualElement class="title-divider title-divider--mini" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="SectionOuter" class="section-outer">
+                        <ui:VisualElement name="SectionInner" class="section-inner">
+                            <ui:VisualElement name="SectionContent" class="section-content">
+                                <ui:VisualElement class="row">
+                                    <ui:VisualElement class="row-head">
+                                        <ui:VisualElement class="row-left">
+                                            <ui:Label text="🔊" class="icon-text" />
+                                            <ui:Label text="SFX" class="row-label" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                                        </ui:VisualElement>
+                                        <ui:Label name="SfxValue" text="80%" class="row-value" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;);" />
+                                    </ui:VisualElement>
+                                    <ui:Slider name="SfxSlider" low-value="0" high-value="1" value="0.8" class="slider" />
+                                </ui:VisualElement>
+                                <ui:VisualElement class="row row--spaced">
+                                    <ui:VisualElement class="row-head">
+                                        <ui:VisualElement class="row-left">
+                                            <ui:Label text="♪" class="icon-text" />
+                                            <ui:Label text="Music" class="row-label" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                                        </ui:VisualElement>
+                                        <ui:Label name="BgmValue" text="60%" class="row-value" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;);" />
+                                    </ui:VisualElement>
+                                    <ui:Slider name="BgmSlider" low-value="0" high-value="1" value="0.6" class="slider" />
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="btn-area">
+                        <ui:Button name="BtnResume" class="btn btn-accent">
+                            <ui:VisualElement class="btn-content">
+                                <ui:Label text="▶" class="btn-icon" />
+                                <ui:Label text="Resume" class="btn-label" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                            </ui:VisualElement>
+                        </ui:Button>
+                        <ui:Button name="BtnMainMenu" class="btn btn-neutral">
+                            <ui:VisualElement class="btn-content">
+                                <ui:Label text="⌂" class="btn-icon" />
+                                <ui:Label text="Main Menu" class="btn-label" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                            </ui:VisualElement>
+                        </ui:Button>
+                        <ui:Button name="BtnQuit" class="btn btn-danger">
+                            <ui:VisualElement class="btn-content">
+                                <ui:VisualElement class="btn-press-inset" />
+                                <ui:Label text="⎋" class="btn-icon" />
+                                <ui:Label text="Exit" class="btn-label" style="-unity-font-definition: resource(&apos;Silkscreen-Regular&apos;); -unity-font-style: bold;" />
+                            </ui:VisualElement>
+                        </ui:Button>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
